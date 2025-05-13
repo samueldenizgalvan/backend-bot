@@ -39,8 +39,8 @@ const citasConfirmadas = new Map();
 const archivoCitas = path.join(__dirname, 'citas.json');
 
 // Middleware
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(session({
     secret: 'tu_secreto_super_seguro',
@@ -147,7 +147,7 @@ app.delete('/api/citas/confirmadas/:telefono', (req, res) => {
 
 // Formulario de Soporte
 app.post('/api/soporte', async (req, res) => {
-  const { nombre, empresa, telefono, descripcion, captchaRespuesta } = req.body;
+  const { nombre, empresa, telefono, descripcion } = req.body;
 
   // (opcional) valida captchaRespuesta contra lo que guardes en sesión
 
@@ -172,7 +172,7 @@ app.post('/api/soporte', async (req, res) => {
 
 // Formulario de Bot Request
 app.post('/api/bot-request', async (req, res) => {
-  const { empresaBot, contactoBot, infoCliente, observacionesBot, captchaRespuesta } = req.body;
+  const { empresaBot, contactoBot, infoCliente, observacionesBot } = req.body;
 
   // (opcional) valida captchaRespuesta…
 
