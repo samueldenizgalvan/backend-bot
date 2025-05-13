@@ -1,4 +1,5 @@
 const express = require('express');
+const nodemailer = require('nodemailer');
 const http = require('http');
 const socketIO = require('socket.io');
 const { Client, LocalAuth } = require('whatsapp-web.js');
@@ -9,8 +10,16 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const cron = require('node-cron');
 
+// Crear el transporter que use sendmail (Postfix) en localhost
+const mailer = nodemailer.createTransport({
+  sendmail: true,
+  newline: 'unix',
+  path: '/usr/sbin/sendmail'
+});
+
 // Inicialización de la aplicación
 const app = express();
+app.use(express.json());
 const server = http.createServer(app);
 const io = socketIO(server);
 
@@ -127,6 +136,51 @@ app.delete('/api/citas/confirmadas/:telefono', (req, res) => {
 
     res.json({ success: true, message: 'Cita confirmada eliminada correctamente' });
 });
+
+// ===========================
+// RUTAS DE FORMULARIOS WEB
+// ===========================
+
+// Formulario de Soporte
+app.post('/api/soporte', async (req, res) => {
+  const { nombre, email, mensaje /*, captchaRespuesta*/ } = req.body;
+
+  // Si validas el captcha en el servidor, hazlo aquí antes de enviar el mail
+
+  try {
+    await mailer.sendMail({
+      from: `"Soporte Web" <administrador@bot-whatsapp.es>`,
+      to: 'samueldenizgalvan@gmail.com',
+      subject: 'Nuevo mensaje de Soporte',
+      text: `Nombre: ${nombre}\nEmail: ${email}\nMensaje:\n${mensaje}`
+    });
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('Error enviando email de soporte:', err);
+    return res.status(500).json({ success: false, error: 'Error interno al enviar email' });
+  }
+});
+
+// Formulario de Bot Request
+app.post('/api/bot-request', async (req, res) => {
+  const { telefono, asunto /*, captchaRespuesta*/ } = req.body;
+
+  // Igual: comprueba captcha si lo necesitas
+
+  try {
+    await mailer.sendMail({
+      from: `"Solicitud Bot" <administrador@bot-whatsapp.es>`,
+      to: 'samueldenizgalvan@gmail.com',
+      subject: 'Nueva solicitud desde Bot Request',
+      text: `Teléfono: ${telefono}\nAsunto:\n${asunto}`
+    });
+    return res.json({ success: true });
+  } catch (err) {
+    console.error('Error enviando email de bot-request:', err);
+    return res.status(500).json({ success: false, error: 'Error interno al enviar email' });
+  }
+});
+
 ;
 
 // Bot WhatsApp
