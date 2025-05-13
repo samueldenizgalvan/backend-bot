@@ -40,7 +40,6 @@ const archivoCitas = path.join(__dirname, 'citas.json');
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(session({
     secret: 'tu_secreto_super_seguro',
@@ -101,6 +100,20 @@ app.get('/api/citas/pendientes', (req, res) => {
 
 app.get('/api/citas/confirmadas', (req, res) => {
     res.json(Array.from(citasConfirmadas.values()));
+});
+
+// --- RUTAS API ---
+app.get('/api/captcha', handlerCaptcha);
+app.post('/api/soporte', handlerSoporte);
+app.post('/api/bot-request', handlerBotRequest);
+// otras rutas API...
+
+// --- Archivos estáticos ---
+app.use(express.static(path.join(__dirname, 'public')));
+
+// --- Si usas catch-all para SPA ---
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
 // Confirmar una cita
