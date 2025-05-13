@@ -14,8 +14,11 @@ const cron = require('node-cron');
 const mailer = nodemailer.createTransport({
   sendmail: true,
   newline: 'unix',
-  path: '/usr/sbin/sendmail'
+  path: '/usr/sbin/sendmail',
+  logger: true,
+  debug: true
 });
+
 
 // Inicialización de la aplicación
 const app = express();
