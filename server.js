@@ -12,9 +12,10 @@ const cron = require('node-cron');
 
 // Crear el transporter que use sendmail (Postfix) en localhost
 const mailer = nodemailer.createTransport({
-  sendmail: true,
-  newline: 'unix',
-  path: '/usr/sbin/sendmail',
+  host: 'localhost',
+  port: 25,
+  secure: false,
+  tls: { rejectUnauthorized: false },
   logger: true,
   debug: true
 });
@@ -146,16 +147,20 @@ app.delete('/api/citas/confirmadas/:telefono', (req, res) => {
 
 // Formulario de Soporte
 app.post('/api/soporte', async (req, res) => {
-  const { nombre, email, mensaje /*, captchaRespuesta*/ } = req.body;
+  const { nombre, empresa, telefono, descripcion, captchaRespuesta } = req.body;
 
-  // Si validas el captcha en el servidor, hazlo aquí antes de enviar el mail
+  // (opcional) valida captchaRespuesta contra lo que guardes en sesión
 
   try {
     await mailer.sendMail({
-      from: `"Soporte Web" <administrador@bot-whatsapp.es>`,
-      to: 'samueldenizgalvan@gmail.com',
+      from:    '"Soporte Web" <administrador@bot-whatsapp.es>',
+      to:      'samueldenizgalvan@gmail.com',
       subject: 'Nuevo mensaje de Soporte',
-      text: `Nombre: ${nombre}\nEmail: ${email}\nMensaje:\n${mensaje}`
+      text:
+        `Nombre: ${nombre}\n` +
+        `Empresa: ${empresa}\n` +
+        `Teléfono: ${telefono}\n` +
+        `Mensaje:\n${descripcion}`
     });
     return res.json({ success: true });
   } catch (err) {
@@ -164,18 +169,23 @@ app.post('/api/soporte', async (req, res) => {
   }
 });
 
+
 // Formulario de Bot Request
 app.post('/api/bot-request', async (req, res) => {
-  const { telefono, asunto /*, captchaRespuesta*/ } = req.body;
+  const { empresaBot, contactoBot, infoCliente, observacionesBot, captchaRespuesta } = req.body;
 
-  // Igual: comprueba captcha si lo necesitas
+  // (opcional) valida captchaRespuesta…
 
   try {
     await mailer.sendMail({
-      from: `"Solicitud Bot" <administrador@bot-whatsapp.es>`,
-      to: 'samueldenizgalvan@gmail.com',
+      from:    '"Solicitud Bot" <administrador@bot-whatsapp.es>',
+      to:      'samueldenizgalvan@gmail.com',
       subject: 'Nueva solicitud desde Bot Request',
-      text: `Teléfono: ${telefono}\nAsunto:\n${asunto}`
+      text:
+        `Empresa: ${empresaBot}\n` +
+        `Contacto: ${contactoBot}\n` +
+        `Información cliente:\n${infoCliente}\n` +
+        `Observaciones:\n${observacionesBot}`
     });
     return res.json({ success: true });
   } catch (err) {
@@ -183,6 +193,7 @@ app.post('/api/bot-request', async (req, res) => {
     return res.status(500).json({ success: false, error: 'Error interno al enviar email' });
   }
 });
+
 
 ;
 
