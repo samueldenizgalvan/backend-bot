@@ -51,6 +51,13 @@ app.use(session({
 
 // Rutas
 app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
+app.get('/api/captcha', (req, res) => {
+    const num1 = Math.floor(Math.random() * 10); // Número entre 0 y 9
+    const num2 = Math.floor(Math.random() * 10); // Número entre 0 y 9
+    const suma = num1 + num2;
+    req.session.captchaAnswer = suma; // Guardar la respuesta en la sesión
+    res.json({ pregunta: `${num1} + ${num2}` }); // Enviar la pregunta al frontend
+});
 
 app.get('/check-auth', (req, res) => {
     res.json({ authenticated: !!req.session.authenticated });
@@ -147,51 +154,51 @@ app.delete('/api/citas/confirmadas/:telefono', (req, res) => {
 
 // Formulario de Soporte
 app.post('/api/soporte', async (req, res) => {
-  const { nombre, empresa, telefono, descripcion } = req.body;
+    const { nombre, empresa, telefono, descripcion, captcha } = req.body;
 
-  // (opcional) valida captchaRespuesta contra lo que guardes en sesión
+    // Validar el captcha
+    if (!req.session.captchaAnswer || parseInt(captcha) !== req.session.captchaAnswer) {
+        return res.status(400).json({ success: false, error: 'Captcha incorrecto' });
+    }
 
-  try {
-    await mailer.sendMail({
-      from:    '"Soporte Web" <administrador@bot-whatsapp.es>',
-      to:      'samueldenizgalvan@gmail.com',
-      subject: 'Nuevo mensaje de Soporte',
-      text:
-        `Nombre: ${nombre}\n` +
-        `Empresa: ${empresa}\n` +
-        `Teléfono: ${telefono}\n` +
-        `Mensaje:\n${descripcion}`
-    });
-    return res.json({ success: true });
-  } catch (err) {
-    console.error('Error enviando email de soporte:', err);
-    return res.status(500).json({ success: false, error: 'Error interno al enviar email' });
-  }
+    // Si el captcha es correcto, enviar el email
+    try {
+        await mailer.sendMail({
+            from: '"Soporte Web" <administrador@bot-whatsapp.es>',
+            to: 'samueldenizgalvan@gmail.com',
+            subject: 'Nuevo mensaje de Soporte',
+            text: `Nombre: ${nombre}\nEmpresa: ${empresa}\nTeléfono: ${telefono}\nMensaje:\n${descripcion}`
+        });
+        return res.json({ success: true });
+    } catch (err) {
+        console.error('Error enviando email de soporte:', err);
+        return res.status(500).json({ success: false, error: 'Error interno al enviar email' });
+    }
 });
 
 
 // Formulario de Bot Request
 app.post('/api/bot-request', async (req, res) => {
-  const { empresaBot, contactoBot, infoCliente, observacionesBot } = req.body;
+    const { empresaBot, contactoBot, infoCliente, observacionesBot, captcha } = req.body;
 
-  // (opcional) valida captchaRespuesta…
+    // Validar el captcha
+    if (!req.session.captchaAnswer || parseInt(captcha) !== req.session.captchaAnswer) {
+        return res.status(400).json({ success: false, error: 'Captcha incorrecto' });
+    }
 
-  try {
-    await mailer.sendMail({
-      from:    '"Solicitud Bot" <administrador@bot-whatsapp.es>',
-      to:      'samueldenizgalvan@gmail.com',
-      subject: 'Nueva solicitud desde Bot Request',
-      text:
-        `Empresa: ${empresaBot}\n` +
-        `Contacto: ${contactoBot}\n` +
-        `Información cliente:\n${infoCliente}\n` +
-        `Observaciones:\n${observacionesBot}`
-    });
-    return res.json({ success: true });
-  } catch (err) {
-    console.error('Error enviando email de bot-request:', err);
-    return res.status(500).json({ success: false, error: 'Error interno al enviar email' });
-  }
+    // Si el captcha es correcto, enviar el email
+    try {
+        await mailer.sendMail({
+            from: '"Solicitud Bot" <administrador@bot-whatsapp.es>',
+            to: 'samueldenizgalvan@gmail.com',
+            subject: 'Nueva solicitud desde Bot Request',
+            text: `Empresa: ${empresaBot}\nContacto: ${contactoBot}\nInformación cliente:\n${infoCliente}\nObservaciones:\n${observacionesBot}`
+        });
+        return res.json({ success: true });
+    } catch (err) {
+        console.error('Error enviando email de bot-request:', err);
+        return res.status(500).json({ success: false, error: 'Error interno al enviar email' });
+    }
 });
 
 
