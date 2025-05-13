@@ -52,11 +52,12 @@ app.use(session({
 // Rutas
 app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
 app.get('/api/captcha', (req, res) => {
-    const num1 = Math.floor(Math.random() * 10); // Número entre 0 y 9
-    const num2 = Math.floor(Math.random() * 10); // Número entre 0 y 9
-    const suma = num1 + num2;
-    req.session.captchaAnswer = suma; // Guardar la respuesta en la sesión
-    res.json({ pregunta: `${num1} + ${num2}` }); // Enviar la pregunta al frontend
+  const num1 = Math.floor(Math.random() * 10);
+  const num2 = Math.floor(Math.random() * 10);
+  const suma = num1 + num2;
+  req.session.captchaAnswer = suma;
+  // Añade 'respuesta' al JSON
+  res.json({ pregunta: `${num1} + ${num2}`, respuesta: suma });
 });
 
 app.get('/check-auth', (req, res) => {
