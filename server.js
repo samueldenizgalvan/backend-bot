@@ -30,11 +30,6 @@ app.use(express.json());
 const server = http.createServer(app);
 const io = socketIO(server);
 
-// Configuración de variables globales para rutas
-app.set('citasPendientes', citasPendientes);
-app.set('citasConfirmadas', citasConfirmadas);
-app.set('guardarCitas', guardarCitas);
-
 // Configuración
 const usuariosValidos = { 'admin': 'password123' };
 const TIEMPO_ESPERA = 5 * 60 * 60 * 1000;
@@ -45,6 +40,11 @@ let ultimaInteraccion = {};
 const citasPendientes = new Map();
 const citasConfirmadas = new Map();
 const archivoCitas = path.join(__dirname, 'citas.json');
+
+// Configuración de variables globales para rutas
+app.set('citasPendientes', citasPendientes);
+app.set('citasConfirmadas', citasConfirmadas);
+app.set('guardarCitas', guardarCitas);
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
