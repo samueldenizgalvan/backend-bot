@@ -56,6 +56,17 @@ app.use(session({
     cookie: { secure: false, httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }
 }));
 
+// --- Captcha simple ---
+app.get('/api/captcha', (req, res) => {
+    // Genera dos números aleatorios para una suma
+    const a = Math.floor(Math.random() * 10) + 1;
+    const b = Math.floor(Math.random() * 10) + 1;
+    req.session.captchaAnswer = a + b;
+    res.json({
+        question: `¿Cuánto es ${a} + ${b}?`
+    });
+});
+
 // Rutas
 app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
 
