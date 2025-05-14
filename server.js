@@ -9,6 +9,9 @@ const path = require('path');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const cron = require('node-cron');
+const soporteRoutes = require('./routes/soporteRoutes');
+const authRoutes = require('./routes/authRoutes');
+const citasRoutes = require('./routes/citasRoutes');
 
 // Crear el transporter que use sendmail (Postfix) en localhost
 const mailer = nodemailer.createTransport({
@@ -26,6 +29,11 @@ const app = express();
 app.use(express.json());
 const server = http.createServer(app);
 const io = socketIO(server);
+
+// Configuración de variables globales para rutas
+app.set('citasPendientes', citasPendientes);
+app.set('citasConfirmadas', citasConfirmadas);
+app.set('guardarCitas', guardarCitas);
 
 // Configuración
 const usuariosValidos = { 'admin': 'password123' };
@@ -50,63 +58,18 @@ app.use(session({
 
 // Rutas
 app.get('/login', (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
-app.get('/api/captcha', (req, res) => {
-  const num1 = Math.floor(Math.random() * 10);
-  const num2 = Math.floor(Math.random() * 10);
-  const suma = num1 + num2;
-  req.session.captchaAnswer = suma;
-  // Añade 'respuesta' al JSON
-  res.json({ pregunta: `${num1} + ${num2}`, respuesta: suma });
-});
 
-app.get('/check-auth', (req, res) => {
-    res.json({ authenticated: !!req.session.authenticated });
+// Middleware para proteger archivos HTML del panel
+app.use((req, res, next) => {
+  if (
+    req.path.endsWith('.html') &&
+    req.path !== '/login.html' &&
+    !req.session.authenticated
+  ) {
+    return res.redirect('/login.html');
+  }
+  next();
 });
-
-app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-    if (usuariosValidos[username] === password) {
-        req.session.authenticated = true;
-        req.session.username = username;
-        res.json({ success: true });
-    } else {
-        res.status(401).json({ success: false });
-    }
-});
-
-app.post('/logout', (req, res) => {
-    req.session.destroy(() => res.json({ success: true }));
-});
-app.post('/apagar-bot', async (req, res) => {
-    if (client) {
-        await client.destroy();
-        io.emit('log', '⛔ Bot de WhatsApp apagado manualmente.');
-        res.json({ apagado: true });
-    } else {
-        res.json({ apagado: false });
-    }
-});
-
-
-app.get('/', (req, res) => {
-    if (!req.session.authenticated) return res.redirect('/login');
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-// Obtener citas
-app.get('/api/citas/pendientes', (req, res) => {
-    res.json(Array.from(citasPendientes.values()));
-});
-
-app.get('/api/citas/confirmadas', (req, res) => {
-    res.json(Array.from(citasConfirmadas.values()));
-});
-
-// --- RUTAS API ---
-app.get('/api/captcha', handlerCaptcha);
-app.post('/api/soporte', handlerSoporte);
-app.post('/api/bot-request', handlerBotRequest);
-// otras rutas API...
 
 // --- Archivos estáticos ---
 app.use(express.static(path.join(__dirname, 'public')));
@@ -114,52 +77,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // --- Si usas catch-all para SPA ---
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
-});
-
-// Confirmar una cita
-app.post('/api/citas/confirmar', (req, res) => {
-    const { telefono, fechaConfirmada, horaConfirmada } = req.body;
-    const cita = citasPendientes.get(telefono);
-
-    if (!cita) return res.status(404).json({ error: 'Cita no encontrada' });
-
-    cita.fechaConfirmada = fechaConfirmada;
-    cita.horaConfirmada = horaConfirmada;
-
-    citasConfirmadas.set(telefono, cita);
-    citasPendientes.delete(telefono);
-    guardarCitas();
-
-    enviarMensajeSeguro(telefono, `✅ Tu cita ha sido confirmada para el día ${fechaConfirmada} a las ${horaConfirmada}`);
-    res.json({ success: true });
-});
-
-// Eliminar cita pendiente
-app.delete('/api/citas/pendientes/:telefono', (req, res) => {
-    const telefono = req.params.telefono;
-
-    if (!citasPendientes.has(telefono)) {
-        return res.status(404).json({ success: false, message: 'Cita pendiente no encontrada' });
-    }
-
-    citasPendientes.delete(telefono);
-    guardarCitas();
-
-    res.json({ success: true, message: 'Cita pendiente eliminada correctamente' });
-});
-
-// Eliminar cita confirmada
-app.delete('/api/citas/confirmadas/:telefono', (req, res) => {
-    const telefono = req.params.telefono;
-
-    if (!citasConfirmadas.has(telefono)) {
-        return res.status(404).json({ success: false, message: 'Cita confirmada no encontrada' });
-    }
-
-    citasConfirmadas.delete(telefono);
-    guardarCitas();
-
-    res.json({ success: true, message: 'Cita confirmada eliminada correctamente' });
 });
 
 // ===========================
@@ -585,4 +502,8 @@ cron.schedule('0 8 * * *', () => {
 
     
 });
+
+app.use('/api', soporteRoutes);
+app.use('/api', citasRoutes);
+app.use('/api', authRoutes);
 

@@ -1,3 +1,7 @@
 node_modules/
+.wwebjs_auth/
 .env
+citas.json
 *.log
+.DS_Store
+npm-debug.log*
