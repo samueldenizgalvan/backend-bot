@@ -74,29 +74,13 @@ app.use((req, res, next) => {
 // --- Archivos estáticos ---
 app.use(express.static(path.join(__dirname, 'public')));
 
-// --- Captcha simple ---
-app.get('/api/captcha', (req, res) => {
-    // Genera dos números aleatorios para una suma
-    const a = Math.floor(Math.random() * 10) + 1;
-    const b = Math.floor(Math.random() * 10) + 1;
-    req.session.captchaAnswer = a + b;
-    res.json({
-        question: `¿Cuánto es ${a} + ${b}?`
-    });
-});
-
 // ===========================
 // RUTAS DE FORMULARIOS WEB
 // ===========================
 
 // Formulario de Soporte
 app.post('/api/soporte', async (req, res) => {
-    const { nombre, empresa, telefono, descripcion, captcha } = req.body;
-
-    // Validar el captcha
-    if (!req.session.captchaAnswer || parseInt(captcha) !== req.session.captchaAnswer) {
-        return res.status(400).json({ success: false, error: 'Captcha incorrecto' });
-    }
+    const { nombre, empresa, telefono, descripcion } = req.body;
 
     // Si el captcha es correcto, enviar el email
     try {
@@ -116,12 +100,7 @@ app.post('/api/soporte', async (req, res) => {
 
 // Formulario de Bot Request
 app.post('/api/bot-request', async (req, res) => {
-    const { empresaBot, contactoBot, infoCliente, observacionesBot, captcha } = req.body;
-
-    // Validar el captcha
-    if (!req.session.captchaAnswer || parseInt(captcha) !== req.session.captchaAnswer) {
-        return res.status(400).json({ success: false, error: 'Captcha incorrecto' });
-    }
+    const { empresaBot, contactoBot, infoCliente, observacionesBot } = req.body;
 
     // Si el captcha es correcto, enviar el email
     try {
@@ -138,8 +117,6 @@ app.post('/api/bot-request', async (req, res) => {
     }
 });
 
-
-;
 
 // Bot WhatsApp
 function iniciarBot() {
