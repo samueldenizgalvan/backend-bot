@@ -2,10 +2,8 @@ const express = require('express');
 const nodemailer = require('nodemailer');
 const http = require('http');
 const socketIO = require('socket.io');
-const { Client, LocalAuth } = require('whatsapp-web.js');
-const qrcode = require('qrcode');
-const fs = require('fs');
 const path = require('path');
+const fs = require('fs');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const cron = require('node-cron');
@@ -13,24 +11,74 @@ const soporteRoutes = require('./routes/soporteRoutes');
 const authRoutes = require('./routes/authRoutes');
 const citasRoutes = require('./routes/citasRoutes');
 
-// Crear el transporter que use sendmail (Postfix) en localhost
+// Configuración de mailer (ajusta según tu config real)
 const mailer = nodemailer.createTransport({
-  host: 'localhost',
-  port: 25,
-  secure: false,
-  tls: { rejectUnauthorized: false },
-  logger: true,
-  debug: true
+  host: 'smtp.tu-servidor.com',
+  port: 465,
+  secure: true,
+  auth: {
+    user: 'usuario@tu-servidor.com',
+    pass: 'tu-contraseña'
+  }
 });
-
 
 // Inicialización de la aplicación
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(session({
+  secret: 'tu_secreto',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }
+}));
+
+// Static & SPA
+app.use(express.static(path.join(__dirname, 'public')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+// ===========================
+// RUTAS DE FORMULARIOS WEB
+// ===========================
+
+// RUTA SOPORTE (SIN NINGUNA VALIDACIÓN DE CAPTCHA)
+app.post('/api/soporte', async (req, res) => {
+  try {
+    await mailer.sendMail({
+      from: '"Soporte Bot" <administrador@bot-whatsapp.es>',
+      to: 'samueldenizgalvan@gmail.com',
+      subject: `Soporte: ${req.body.nombre}`,
+      text: `\nNombre: ${req.body.nombre}\nEmpresa: ${req.body.empresa}\nTeléfono: ${req.body.telefono}\nDescripción: ${req.body.descripcion}\n  `
+    });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Error interno' });
+  }
+});
+
+// RUTA BOT REQUEST (TAMBIÉN SIN CAPTCHA)
+app.post('/api/bot-request', async (req, res) => {
+  try {
+    await mailer.sendMail({
+      from: '"Soporte Bot" <administrador@bot-whatsapp.es>',
+      to: 'samueldenizgalvan@gmail.com',
+      subject: `Solicitud Bot: ${req.body.empresaBot}`,
+      text: `\nEmpresa: ${req.body.empresaBot}\nContacto: ${req.body.contactoBot}\nDatos a pedir: ${req.body.infoCliente}\nObservaciones: ${req.body.observacionesBot || ''}\n  `
+    });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Error interno' });
+  }
+});
+
+// WebSocket
 const server = http.createServer(app);
 const io = socketIO(server);
 
-// Configuración
+// ...configuración de sockets, recordatorios, etc. (igual que antes)...
 const usuariosValidos = { 'admin': 'password123' };
 const TIEMPO_ESPERA = 5 * 60 * 60 * 1000;
 let client = null;
@@ -70,53 +118,6 @@ app.use((req, res, next) => {
   }
   next();
 });
-
-// --- Archivos estáticos ---
-app.use(express.static(path.join(__dirname, 'public')));
-
-// ===========================
-// RUTAS DE FORMULARIOS WEB
-// ===========================
-
-// Formulario de Soporte
-app.post('/api/soporte', async (req, res) => {
-    const { nombre, empresa, telefono, descripcion } = req.body;
-
-    // Si el captcha es correcto, enviar el email
-    try {
-        await mailer.sendMail({
-            from: '"Soporte Web" <administrador@bot-whatsapp.es>',
-            to: 'samueldenizgalvan@gmail.com',
-            subject: 'Nuevo mensaje de Soporte',
-            text: `Nombre: ${nombre}\nEmpresa: ${empresa}\nTeléfono: ${telefono}\nMensaje:\n${descripcion}`
-        });
-        return res.json({ success: true });
-    } catch (err) {
-        console.error('Error enviando email de soporte:', err);
-        return res.status(500).json({ success: false, error: 'Error interno al enviar email' });
-    }
-});
-
-
-// Formulario de Bot Request
-app.post('/api/bot-request', async (req, res) => {
-    const { empresaBot, contactoBot, infoCliente, observacionesBot } = req.body;
-
-    // Si el captcha es correcto, enviar el email
-    try {
-        await mailer.sendMail({
-            from: '"Solicitud Bot" <administrador@bot-whatsapp.es>',
-            to: 'samueldenizgalvan@gmail.com',
-            subject: 'Nueva solicitud desde Bot Request',
-            text: `Empresa: ${empresaBot}\nContacto: ${contactoBot}\nInformación cliente:\n${infoCliente}\nObservaciones:\n${observacionesBot}`
-        });
-        return res.json({ success: true });
-    } catch (err) {
-        console.error('Error enviando email de bot-request:', err);
-        return res.status(500).json({ success: false, error: 'Error interno al enviar email' });
-    }
-});
-
 
 // Bot WhatsApp
 function iniciarBot() {
