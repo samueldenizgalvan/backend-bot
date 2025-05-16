@@ -1,12 +1,11 @@
 const mailerService = require('../services/mailerService');
 
 exports.handleSoporte = async (req, res) => {
-  const { nombre, empresa, telefono, descripcion, captcha } = req.body;
-  if (!req.session.captchaAnswer || parseInt(captcha) !== req.session.captchaAnswer) {
-    return res.status(400).json({ success: false, error: 'Captcha incorrecto' });
-  }
+  const { nombre, empresa, telefono, descripcion } = req.body;
+  console.log('[Soporte] Datos recibidos:', req.body);
   try {
     await mailerService.sendSoporteEmail({ nombre, empresa, telefono, descripcion });
+    console.log('[Soporte] Email enviado correctamente');
     return res.json({ success: true });
   } catch (err) {
     console.error('Error enviando email de soporte:', err);
@@ -15,12 +14,11 @@ exports.handleSoporte = async (req, res) => {
 };
 
 exports.handleBotRequest = async (req, res) => {
-  const { empresaBot, contactoBot, infoCliente, observacionesBot, captcha } = req.body;
-  if (!req.session.captchaAnswer || parseInt(captcha) !== req.session.captchaAnswer) {
-    return res.status(400).json({ success: false, error: 'Captcha incorrecto' });
-  }
+  const { empresaBot, contactoBot, infoCliente, observacionesBot } = req.body;
+  console.log('[BotRequest] Datos recibidos:', req.body);
   try {
     await mailerService.sendBotRequestEmail({ empresaBot, contactoBot, infoCliente, observacionesBot });
+    console.log('[BotRequest] Email enviado correctamente');
     return res.json({ success: true });
   } catch (err) {
     console.error('Error enviando email de bot-request:', err);
