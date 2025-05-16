@@ -36,9 +36,6 @@ app.use(session({
 
 // Static & SPA
 app.use(express.static(path.join(__dirname, 'public')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'login.html'));
-});
 
 // ===========================
 // RUTAS DE FORMULARIOS WEB
@@ -453,6 +450,11 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// --- Si usas catch-all para SPA ---
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
 // ✅ Función que envía recordatorio 3 días antes de la cita confirmada
 function verificarRecordatorios() {
     const hoy = new Date();
@@ -477,11 +479,7 @@ app.use('/api', soporteRoutes);
 app.use('/api', citasRoutes);
 app.use('/api', authRoutes);
 
-// --- Si usas catch-all para SPA ---
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'login.html'));
-});
-
+// Iniciar servidor
 server.listen(3000, () => {
     console.log('🚀 Servidor listo en http://localhost:3000');
     cargarCitas();
