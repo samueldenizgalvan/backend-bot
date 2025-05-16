@@ -450,9 +450,24 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+app.use('/api', soporteRoutes);
+app.use('/api', citasRoutes);
+app.use('/api', authRoutes);
+
 // --- Si usas catch-all para SPA ---
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+// Iniciar servidor
+server.listen(3000, () => {
+    console.log('🚀 Servidor listo en http://localhost:3000');
+    cargarCitas();
+    // ⏰ Ejecutar todos los días a las 08:00
+    cron.schedule('0 8 * * *', () => {
+        console.log('⏰ Verificando citas para enviar recordatorios (08:00)');
+        verificarRecordatorios();
+    });
 });
 
 // ✅ Función que envía recordatorio 3 días antes de la cita confirmada
@@ -474,21 +489,4 @@ function verificarRecordatorios() {
 
     guardarCitas();
 }
-
-app.use('/api', soporteRoutes);
-app.use('/api', citasRoutes);
-app.use('/api', authRoutes);
-
-// Iniciar servidor
-server.listen(3000, () => {
-    console.log('🚀 Servidor listo en http://localhost:3000');
-    cargarCitas();
-    // ⏰ Ejecutar todos los días a las 08:00
-cron.schedule('0 8 * * *', () => {
-    console.log('⏰ Verificando citas para enviar recordatorios (08:00)');
-    verificarRecordatorios();
-});
-
-    
-});
 
