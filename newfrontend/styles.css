@@ -1,0 +1,137 @@
+:root {
+    --primary: #25D366;
+    --error: #e74c3c;
+}
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f8f9fa;
+    margin: 0;
+    padding-top: 60px; /* Espacio para la navbar */
+}
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--primary);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 1.5rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+nav a {
+    color: white;
+    margin-left: 20px;
+    text-decoration: none;
+    font-weight: 500;
+}
+.login-box {
+    background: white;
+    width: 320px;
+    padding: 2.5rem;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 50px;
+}
+.logo {
+    color: var(--primary);
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+}
+.input-group {
+    margin-bottom: 1.2rem;
+    text-align: left;
+}
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #555;
+    font-weight: 500;
+}
+input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border 0.3s;
+}
+input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+button {
+    width: 100%;
+    padding: 0.8rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 0.5rem;
+}
+button:hover {
+    background: #128C7E;
+}
+.error-message {
+    color: var(--error);
+    margin-top: 1rem;
+    min-height: 1.2rem;
+    font-size: 0.9rem;
+}
+.version {
+    margin-top: 1.5rem;
+    font-size: 0.8rem;
+    color: #999;
+}
+footer {
+    margin-top: 30px;
+    font-size: 0.9rem;
+    color: #555;
+    text-align: center;
+}
+body.dark-mode {
+    background: #121212;
+    color: #e0e0e0;
+}
+body.dark-mode nav {
+    background: #1f1f1f;
+}
+body.dark-mode .login-box,
+body.dark-mode section,
+body.dark-mode footer {
+    background: #1e1e1e;
+    color: #e0e0e0;
+    border-color: #333;
+}
+body.dark-mode input,
+body.dark-mode textarea {
+    background: #2a2a2a;
+    color: #e0e0e0;
+    border: 1px solid #444;
+}
+body.dark-mode button {
+    background: #25D366;
+    color: white;
+}
+.dark-mode-toggle {
+    color: white;
+    margin-left: 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
+.dark-mode-toggle:hover {
+    opacity: 0.8;
+}

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Bot WhatsApp</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <div><strong>WhatsApp Bot Para empresas</strong></div>
+        <div>
+            <a href="#funciona">Cómo funciona</a>
+            <a href="#Soporte">Soporte</a>
+            <a href="#precios">Precios</a>
+            <a href="#quieroBot">Quiero mi bot</a>
+            <a id="darkModeToggle" class="dark-mode-toggle">🌙</a>
+        </div>
+    </nav>
+
+    <!-- LOGIN -->
+    <div class="login-box">
+        <div class="logo">Iniciar Sesión</div>
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="username">Usuario</label>
+                <input type="text" id="username" name="username" required autocomplete="username" placeholder="administrador">
+            </div>
+            <div class="input-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="••••••••">
+            </div>
+            <button type="submit">Entrar</button>
+            <div class="error-message" id="error-message"></div>
+            <div class="version">v1.0.0</div>
+        </form>
+    </div>
+
+    <!-- Cómo funciona este bot -->
+    <section id="funciona" style="padding: 4rem 2rem; background: #f8f9fa; text-align: center;">
+    <h2 style="font-size: 2rem; margin-bottom: 1rem;">¿Cómo funciona este bot?</h2>
+    <p style="max-width: 800px; margin: 0 auto 3rem; color: #555;">
+        Automatiza la gestión de citas de tu negocio a través de WhatsApp con un sistema simple, eficaz y sin complicaciones.
+    </p>
+
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; max-width: 1200px; margin: 0 auto;">
+        <div style="background: white; border: 1px solid #ddd; border-radius: 10px; padding: 2rem; width: 300px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); text-align: left;">
+            <h3 style="color: #25D366; font-size: 1.3rem;">📩 Solicitudes vía WhatsApp</h3>
+            <p style="color: #444;">Tus clientes pueden enviar una solicitud de cita de forma rápida y sencilla, sin apps adicionales.</p>
+        </div>
+
+        <div style="background: white; border: 1px solid #ddd; border-radius: 10px; padding: 2rem; width: 300px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); text-align: left;">
+            <h3 style="color: #25D366; font-size: 1.3rem;">📊 Panel de gestión</h3>
+            <p style="color: #444;">Recibe las solicitudes en un panel web donde podrás revisarlas y confirmarlas en segundos.</p>
+        </div>
+
+        <div style="background: white; border: 1px solid #ddd; border-radius: 10px; padding: 2rem; width: 300px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); text-align: left;">
+            <h3 style="color: #25D366; font-size: 1.3rem;">✅ Confirmaciones automáticas</h3>
+            <p style="color: #444;">El bot enviará automáticamente la confirmación de la cita a tus clientes.</p>
+        </div>
+
+        <div style="background: white; border: 1px solid #ddd; border-radius: 10px; padding: 2rem; width: 300px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); text-align: left;">
+            <h3 style="color: #25D366; font-size: 1.3rem;">⏰ Recordatorios previos</h3>
+            <p style="color: #444;">Tus clientes recibirán un recordatorio unos días antes de la cita para reducir inasistencias.</p>
+        </div>
+
+        <div style="background: white; border: 1px solid #ddd; border-radius: 10px; padding: 2rem; width: 300px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); text-align: left;">
+            <h3 style="color: #25D366; font-size: 1.3rem;">💳 Gastos de cancelación</h3>
+            <p style="color: #444;">Opcionalmente puedes aplicar un cargo por cancelaciones de última hora si así lo deseas.</p>
+        </div>
+    </div>
+</section>
+
+    <!-- SECCIÓN SOPORTE -->
+    <section id="Soporte" style="padding: 3rem; text-align: center; background: #f1f1f1;">
+      <h2>Soporte</h2>
+      <div class="login-box">
+        <h2>Contacto Soporte</h2>
+        <form id="soporteForm">
+            <label for="nombre">Nombre</label>
+            <input id="nombre" name="nombre" required>
+            <label for="empresa">Empresa</label>
+            <input id="empresa" name="empresa" required>
+            <label for="telefono">Teléfono</label>
+            <input id="telefono" name="telefono" required>
+            <label for="descripcion">Descripción</label>
+            <textarea id="descripcion" name="descripcion" required></textarea>
+            <!-- CAPTCHA -->
+            <label id="captchaLabel" for="captchaInput"></label>
+            <input id="captchaInput" type="text" required placeholder="Respuesta">
+            <button type="submit">Enviar</button>
+        </form>
+    </div>
+    </section>
+
+    <!-- SECCIÓN PRECIOS -->
+    <section id="precios" style="padding: 3rem; text-align: center; background: #ffffff;">
+    <h2 style="font-size: 2rem; margin-bottom: 1rem;">Plan a tu medida</h2>
+
+    <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
+        <div style="background: #f8f9fa; border: 1px solid #ddd; border-radius: 10px; padding: 2rem; width: 280px; box-shadow: 0 3px 10px rgba(0,0,0,0.05);">
+            <h3 style="color: #25D366; font-size: 1.5rem; margin-bottom: 0.5rem;">Pack Profesional</h3>
+            <p style="font-size: 1.2rem; margin-bottom: 1rem;">600€ pago único</p>
+            <ul style="list-style: none; padding: 0; color: #444; text-align: left;">
+                <li>✅ Bot WhatsApp personalizado</li>
+                <li>✅ Confirmación de citas</li>
+                <li>✅ Recordatorios automáticos</li>
+                <li>✅ Página web con subdominio</li>
+            </ul>
+        </div>
+
+        <div style="background: #f8f9fa; border: 1px solid #ddd; border-radius: 10px; padding: 2rem; width: 280px; box-shadow: 0 3px 10px rgba(0,0,0,0.05);">
+            <h3 style="color: #25D366; font-size: 1.5rem; margin-bottom: 0.5rem;">Mantenimiento</h3>
+            <p style="font-size: 1.2rem; margin-bottom: 1rem;">20€/mes</p>
+            <ul style="list-style: none; padding: 0; color: #444; text-align: left;">
+                <li>✅ Actualizaciones</li>
+                <li>✅ Soporte técnico</li>
+                <li>✅ Optimización continua</li>
+                <li>✅ Corrección de errores</li>
+            </ul>
+        </div>
+    </div>
+
+    <p style="margin-top: 2rem;">
+        <a href="#Quiero mi bot" style="background: #25D366; color: white; padding: 0.8rem 2rem; border-radius: 5px; text-decoration: none; font-weight: bold;">Solicita tu bot ahora</a>
+    </p>
+    <p style="margin-top: 2rem; color: #777; font-size: 0.85rem;">
+    🔒 Pago seguro mediante Bizum o transferencia. <br>
+    📞 Soporte personalizado para cada cliente. <br>
+    🚀 Entrega rápida y acompañamiento hasta la activación.
+</p>
+
+</section>
+
+    <!-- SECCIÓN QUIERO MI BOT -->
+    <section id="quieroBot" style="padding: 3rem; text-align: center; background: #f8f9fa;">
+      <h2>Crea tu propio Bot de WhatsApp</h2>
+      <div style="display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; align-items: flex-start; margin-top: 2rem;">
+        <!-- Formulario -->
+        <form id="botRequestForm" style="max-width: 500px; width: 100%; text-align: left; background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.05);">
+            <div style="margin-bottom: 1rem;">
+                <label for="empresaBot">Nombre de tu Empresa</label>
+                <input type="text" id="empresaBot" name="empresaBot" required style="width: 100%; padding: 0.5rem;">
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label for="contactoBot">Teléfono de Contacto</label>
+                <input type="tel" id="contactoBot" name="contactoBot" required style="width: 100%; padding: 0.5rem;">
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label for="infoCliente">¿Qué datos debe pedir tu bot a los clientes?</label>
+                <textarea id="infoCliente" name="infoCliente" rows="4" required style="width: 100%; padding: 0.5rem;"></textarea>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <label for="observacionesBot">Observaciones adicionales</label>
+                <textarea id="observacionesBot" name="observacionesBot" rows="3" style="width: 100%; padding: 0.5rem;"></textarea>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+<label for="captchaBotInput" id="captchaBotLabel"></label>
+  <input type="text" id="captchaBotInput" name="captchaBot" required style="width: 100%; padding: 0.5rem;">
+</div>
+
+            <button type="submit" style="background: #25D366; color: white; padding: 0.7rem 1.5rem; border: none; border-radius: 5px; width: 100%;">Enviar solicitud</button>
+            <div id="botFormMessage" style="margin-top: 1rem; color: green;"></div>
+        </form>
+
+        <!-- Texto informativo -->
+        <div style="max-width: 400px; text-align: left; color: #555; font-size: 0.95rem; line-height: 1.5;">
+            <p>
+                Para comenzar con la creación de su bot, se requerirá un pago anticipado del 50% del importe total mediante <strong>Bizum</strong> o <strong>transferencia bancaria</strong>.
+            </p>
+            <p>
+                Una vez recibido este formulario, me pondré en contacto con usted para confirmar todos los datos y definir el flujo final de su bot.
+            </p>
+            <p>
+                Tras completar la configuración, le informaré por <strong>email o teléfono</strong> para asistirle en la activación y puesta en marcha.
+            </p>
+            <p>
+                El acceso al bot se realizará a través de un <strong>subdominio personalizado</strong> en la web del bot, cuyo login será comunicado directamente por mí.
+            </p>
+        </div>
+      </div>
+    </section>
+
+    <script src="login.js"></script>
+    <footer style="background: #f8f9fa; padding: 1rem; text-align: center; font-size: 0.9rem; color: #555;">
+    Hecho por <a href="https://www.linkedin.com/in/samueldeniz" target="_blank" style="color: #25D366; text-decoration: none; font-weight: bold;">Samuel Déniz</a>
+</footer>
+</body>
+</html>
