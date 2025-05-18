@@ -7,7 +7,6 @@ const fs = require('fs');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const cron = require('node-cron');
-const soporteRoutes = require('./routes/soporteRoutes');
 const authRoutes = require('./routes/authRoutes');
 const citasRoutes = require('./routes/citasRoutes');
 
@@ -420,9 +419,9 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.use('/api', soporteRoutes);
-app.use('/api', citasRoutes);
 app.use('/api', authRoutes);
+app.use('/api', citasRoutes);
+app.use('/api', soporteRoutes);
 
 // --- Si usas catch-all para SPA ---
 app.get('*', (req, res) => {
