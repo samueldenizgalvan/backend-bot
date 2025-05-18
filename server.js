@@ -9,6 +9,7 @@ const bodyParser = require('body-parser');
 const cron = require('node-cron');
 const authRoutes = require('./routes/authRoutes');
 const citasRoutes = require('./routes/citasRoutes');
+const soporteRoutes = require('./routes/soporteRoutes'); // <-- AGREGA ESTA LÍNEA
 
 // Configuración de mailer (ajusta según tu config real)
 const mailer = nodemailer.createTransport({
