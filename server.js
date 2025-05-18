@@ -41,36 +41,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // RUTAS DE FORMULARIOS WEB
 // ===========================
 
-// RUTA SOPORTE (SIN NINGUNA VALIDACIÓN DE CAPTCHA)
-app.post('/api/soporte', async (req, res) => {
-  try {
-    await mailer.sendMail({
-      from: '"Soporte Bot" <administrador@bot-whatsapp.es>',
-      to: 'samueldenizgalvan@gmail.com',
-      subject: `Soporte: ${req.body.nombre}`,
-      text: `\nNombre: ${req.body.nombre}\nEmpresa: ${req.body.empresa}\nTeléfono: ${req.body.telefono}\nDescripción: ${req.body.descripcion}\n  `
-    });
-    res.json({ success: true });
-  } catch (err) {
-    res.status(500).json({ success: false, error: 'Error interno' });
-  }
-});
-
-// RUTA BOT REQUEST (TAMBIÉN SIN CAPTCHA)
-app.post('/api/bot-request', async (req, res) => {
-  try {
-    await mailer.sendMail({
-      from: '"Soporte Bot" <administrador@bot-whatsapp.es>',
-      to: 'samueldenizgalvan@gmail.com',
-      subject: `Solicitud Bot: ${req.body.empresaBot}`,
-      text: `\nEmpresa: ${req.body.empresaBot}\nContacto: ${req.body.contactoBot}\nDatos a pedir: ${req.body.infoCliente}\nObservaciones: ${req.body.observacionesBot || ''}\n  `
-    });
-    res.json({ success: true });
-  } catch (err) {
-    res.status(500).json({ success: false, error: 'Error interno' });
-  }
-});
-
 // WebSocket
 const server = http.createServer(app);
 const io = socketIO(server);
