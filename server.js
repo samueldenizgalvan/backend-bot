@@ -403,12 +403,23 @@ app.post('/login', (req, res) => {
 
     // Validar credenciales
     if (usuario === 'admin' && contraseña === 'admin123') {
+        req.session.usuario = 'admin';
         return res.redirect('/admin.html');
     } else if (usuario === 'cliente' && contraseña === 'cliente123') {
+        req.session.usuario = 'cliente';
         return res.redirect('/index.html');
     } else {
         return res.status(401).send('Credenciales inválidas');
     }
+});
+
+// Proteger rutas específicas
+app.get('/index.html', protegerRuta, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.get('/admin.html', protegerRuta, (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
 app.use('/api', authRoutes);
@@ -449,5 +460,13 @@ function verificarRecordatorios() {
     }
 
     guardarCitas();
+}
+
+// Middleware para proteger rutas
+function protegerRuta(req, res, next) {
+    if (!req.session.usuario) {
+        return res.redirect('/');
+    }
+    next();
 }
 
