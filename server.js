@@ -429,6 +429,13 @@ app.use('/api', authRoutes);
 app.use('/api', citasRoutes);
 app.use('/api', soporteRoutes);
 
+// Nueva ruta para flujo de usuario
+app.get('/api/flujo-usuario', (req, res) => {
+    res.json({
+        fields: ['Teléfono', 'Nombre', 'Vehículo', 'Trabajo', 'Fecha deseada', 'Hora deseada', 'Observación']
+    });
+});
+
 // Iniciar servidor
 server.listen(3000, () => {
     console.log('🚀 Servidor listo en http://localhost:3000');
