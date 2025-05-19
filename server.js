@@ -399,12 +399,12 @@ app.get('/', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
-    const { username, password } = req.body;
+    const { usuario, contraseña } = req.body;
 
     // Validar credenciales
-    if (username === 'admin' && password === 'Samueldg1992..') {
+    if (usuario === 'admin' && contraseña === 'admin123') {
         return res.redirect('/admin.html');
-    } else if (username === 'user' && password === 'user123') {
+    } else if (usuario === 'cliente' && contraseña === 'cliente123') {
         return res.redirect('/index.html');
     } else {
         return res.status(401).send('Credenciales inválidas');
