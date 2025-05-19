@@ -398,6 +398,19 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+
+    // Validar credenciales
+    if (username === 'admin' && password === 'Samueldg1992..') {
+        return res.redirect('/admin.html');
+    } else if (username === 'user' && password === 'user123') {
+        return res.redirect('/index.html');
+    } else {
+        return res.status(401).send('Credenciales inválidas');
+    }
+});
+
 app.use('/api', authRoutes);
 app.use('/api', citasRoutes);
 app.use('/api', soporteRoutes);
