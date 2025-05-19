@@ -398,6 +398,9 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
+// Eliminar cualquier fallback genérico
+// Comentado: app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
+
 app.post('/login', (req, res) => {
     const { usuario, contraseña } = req.body;
 
@@ -425,11 +428,6 @@ app.get('/admin.html', protegerRuta, (req, res) => {
 app.use('/api', authRoutes);
 app.use('/api', citasRoutes);
 app.use('/api', soporteRoutes);
-
-// --- Si usas catch-all para SPA ---
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'login.html'));
-});
 
 // Iniciar servidor
 server.listen(3000, () => {

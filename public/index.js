@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const tablaPendientes = document.getElementById('tablaPendientes');
     const tablaConfirmadas = document.getElementById('tablaConfirmadas');
     const botStatus = document.getElementById('botStatus');
+    const totalPendientes = document.getElementById('totalPendientes');
+    const totalConfirmadas = document.getElementById('totalConfirmadas');
 
     function agregarLog(mensaje) {
         if (logs) {
@@ -244,6 +246,22 @@ fetch('/api/flujo-usuario')
         if (tablaPendientes) tablaPendientes.style.display = 'none';
         if (tablaConfirmadas) tablaConfirmadas.style.display = 'none';
     });
+
+    // Verificar y actualizar el estado del bot
+    if (botStatus) {
+        if (!botStatus.textContent.trim()) {
+            botStatus.textContent = 'Desconectado ❌';
+        }
+    }
+
+    // Actualizar contadores si existen
+    if (totalPendientes) {
+        totalPendientes.textContent = '3'; // Simulación de datos
+    }
+
+    if (totalConfirmadas) {
+        totalConfirmadas.textContent = '12'; // Simulación de datos
+    }
 });
 
 
