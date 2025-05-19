@@ -395,10 +395,7 @@ io.on('connection', socket => {
 // Iniciar servidor y cargar citas
 
 app.get('/', (req, res) => {
-    if (!req.session.authenticated) {
-        return res.redirect('/login');
-    }
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
 app.use('/api', authRoutes);
