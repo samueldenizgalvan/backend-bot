@@ -262,6 +262,9 @@ fetch('/api/flujo-usuario')
     if (totalConfirmadas) {
         totalConfirmadas.textContent = '12'; // Simulación de datos
     }
+
+    // Emit a test message to the server
+    socket.emit('message', { from: 'test-user@example.com', body: 'Hello, bot!' });
 });
 
 
