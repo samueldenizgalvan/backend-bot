@@ -3,10 +3,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const logs = document.getElementById('logs');
     const tablaPendientes = document.getElementById('tablaPendientes');
     const tablaConfirmadas = document.getElementById('tablaConfirmadas');
+    const botStatus = document.getElementById('botStatus');
 
     function agregarLog(mensaje) {
-        logs.innerHTML += `<p>${mensaje}</p>`;
-        logs.scrollTop = logs.scrollHeight;
+        if (logs) {
+            logs.innerHTML += `<p>${mensaje}</p>`;
+            logs.scrollTop = logs.scrollHeight;
+        }
     }
     function createCell(content) {
         const td = document.createElement('td');
@@ -37,30 +40,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     socket.on('log', (mensaje) => {
-    const logsDiv = document.getElementById('logs');
-    const logEntry = document.createElement('div');
+        if (logs) {
+            const logEntry = document.createElement('div');
 
-    // Estilo según tipo
-    if (mensaje.includes('✅')) logEntry.style.color = '#25D366';
-    else if (mensaje.includes('❗') || mensaje.includes('❌')) logEntry.style.color = '#e74c3c';
-    else if (mensaje.includes('🔔')) logEntry.style.color = '#f39c12';
-    else logEntry.style.color = '#333';
+            // Estilo según tipo
+            if (mensaje.includes('✅')) logEntry.style.color = '#25D366';
+            else if (mensaje.includes('❗') || mensaje.includes('❌')) logEntry.style.color = '#e74c3c';
+            else if (mensaje.includes('🔔')) logEntry.style.color = '#f39c12';
+            else logEntry.style.color = '#333';
 
-    logEntry.textContent = mensaje;
-    logsDiv.prepend(logEntry);
+            logEntry.textContent = mensaje;
+            logs.prepend(logEntry);
 
-    if (logsDiv.children.length > 50) {
-        logsDiv.removeChild(logsDiv.lastChild);
-    }
-});
-
-
-    
+            if (logs.children.length > 50) {
+                logs.removeChild(logs.lastChild);
+            }
+        }
+    });
 
     socket.on('ready', () => {
-        document.getElementById('botStatus').textContent = '✅ Conectado a WhatsApp Business';
-        document.getElementById('qr').style.display = 'none';
-        cargarCitas();
+        if (botStatus) {
+            botStatus.textContent = '✅ Conectado a WhatsApp Business';
+        }
+        if (document.getElementById('qr')) {
+            document.getElementById('qr').style.display = 'none';
+        }
+        if (tablaPendientes && tablaConfirmadas) {
+            cargarCitas();
+        }
     });
     socket.on('nueva-cita', () => {
         cargarCitas(); // 🔁 Refrescar citas automáticamente
@@ -68,20 +75,29 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
     socket.on('qr', (qrURL) => {
-        document.getElementById('qr').src = qrURL;
-        document.getElementById('qr').style.display = 'block';
-        document.getElementById('botStatus').textContent = '📸 Escanea el código QR en WhatsApp Business';
+        const qr = document.getElementById('qr');
+        if (qr) {
+            qr.src = qrURL;
+            qr.style.display = 'block';
+        }
+        if (botStatus) {
+            botStatus.textContent = '📸 Escanea el código QR en WhatsApp Business';
+        }
     });
 
-    document.querySelector('button[onclick="conectarSesion()"]').onclick = () => {
+    document.querySelector('button[onclick="conectarSesion()"]')?.addEventListener('click', () => {
         socket.emit('conectarSesion');
-        document.getElementById('botStatus').textContent = '⏳ Intentando conectar con la sesión existente...';
-    };
+        if (botStatus) {
+            botStatus.textContent = '⏳ Intentando conectar con la sesión existente...';
+        }
+    });
 
-    document.querySelector('button[onclick="vincularNuevaCuenta()"]').onclick = () => {
+    document.querySelector('button[onclick="vincularNuevaCuenta()"]')?.addEventListener('click', () => {
         socket.emit('startBot');
-        document.getElementById('botStatus').textContent = '⏳ Generando nuevo QR...';
-    };
+        if (botStatus) {
+            botStatus.textContent = '⏳ Generando nuevo QR...';
+        }
+    });
 
     document.getElementById('logoutBtn').onclick = () => {
         fetch('/logout', { method: 'POST' }).then(() => location.href = '/login');
@@ -218,13 +234,15 @@ fetch('/api/flujo-usuario')
     })
     .then(data => {
         userFields = data.fields;
-        crearEncabezadoTabla(userFields);
-        cargarCitas();
+        if (tablaPendientes) {
+            crearEncabezadoTabla(userFields);
+            cargarCitas();
+        }
     })
     .catch(err => {
         mostrarMensajeError(err.message);
-        document.getElementById('tablaPendientes').style.display = 'none';
-        document.getElementById('tablaConfirmadas').style.display = 'none';
+        if (tablaPendientes) tablaPendientes.style.display = 'none';
+        if (tablaConfirmadas) tablaConfirmadas.style.display = 'none';
     });
 });
 
