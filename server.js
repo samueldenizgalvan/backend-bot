@@ -72,8 +72,9 @@ cron.schedule('0 8 * * *', () => {
 });
 
 // Start Server
-server.listen(3000, () => {
-    console.log('🚀 Servidor listo en http://localhost:3000');
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`🚀 Servidor listo en http://localhost:${PORT}`);
     cargarCitas();
 });
 
