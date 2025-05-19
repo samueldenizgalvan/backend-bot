@@ -394,6 +394,7 @@ io.on('connection', socket => {
 
 // Iniciar servidor y cargar citas
 
+// Ensure the root route always serves login.html
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
