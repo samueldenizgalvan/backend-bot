@@ -99,6 +99,40 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    // ========= LOGIN FORM HANDLER ==========
+    const loginForm = document.getElementById('loginForm');
+    if (loginForm) {
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = '';
+            fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.role === 'admin') {
+                    window.location.href = 'admin.html';
+                } else if (data.success) {
+                    // Si es usuario normal, puedes redirigir a otro panel si lo tienes
+                    errorDiv.textContent = 'Acceso solo para administradores.';
+                    errorDiv.style.color = 'red';
+                } else {
+                    errorDiv.textContent = data.message || 'Usuario o contraseña incorrectos.';
+                    errorDiv.style.color = 'red';
+                }
+            })
+            .catch(() => {
+                errorDiv.textContent = 'Error de red. Intenta de nuevo.';
+                errorDiv.style.color = 'red';
+            });
+        });
+    }
+
     // Inicializar todo
     initDarkMode();
     initCaptchaSystem();
