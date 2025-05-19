@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Administración</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-title">Admin</div>
+        <button class="sidebar-btn" onclick="mostrarSeccion('estadisticas')">📊 Estadísticas</button>
+        <button class="sidebar-btn" onclick="mostrarSeccion('bots')">🤖 Bots activos</button>
+        <button class="sidebar-btn" onclick="mostrarSeccion('usuarios')">👤 Usuarios</button>
+        <button class="sidebar-btn" onclick="mostrarSeccion('citas')">📅 Citas</button>
+        <button class="sidebar-btn" onclick="mostrarSeccion('logs')">📝 Log general</button>
+        <button class="sidebar-btn" onclick="mostrarSeccion('actividad')">🕒 Actividad reciente</button>
+    </div>
+    <div class="main-panel">
+        <!-- Header Moderno -->
+        <header class="admin-header">
+            <div class="admin-header-left">
+                <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp Bot" style="height:38px;vertical-align:middle;margin-right:10px;">
+                <span style="font-size:1.5em;font-weight:bold;color:#25D366;">Panel de Administración</span>
+            </div>
+            <div class="admin-header-right">
+                <span id="adminUser" style="color:#222;font-weight:500;">👤 admin</span>
+            </div>
+        </header>
+        <!-- Estadísticas rápidas -->
+        <div id="seccion-estadisticas" class="seccion-admin">
+            <h2 style="text-align:center; color:#25D366; margin-bottom:1.5em;">Panel de Administración</h2>
+            <section class="admin-card" style="margin-bottom:2em;">
+                <h3>Estadísticas rápidas</h3>
+                <div id="estadisticasPanel" style="display:flex; gap:2em; flex-wrap:wrap; justify-content:space-between;">
+                    <div style="flex:1; min-width:120px;">
+                        <div style="font-size:2em; font-weight:bold; color:#25D366;" id="statUsuarios">0</div>
+                        <div>Usuarios</div>
+                    </div>
+                    <div style="flex:1; min-width:120px;">
+                        <div style="font-size:2em; font-weight:bold; color:#25D366;" id="statBots">0</div>
+                        <div>Bots activos</div>
+                    </div>
+                    <div style="flex:1; min-width:120px;">
+                        <div style="font-size:2em; font-weight:bold; color:#25D366;" id="statCitasPendientes">0</div>
+                        <div>Citas pendientes</div>
+                    </div>
+                    <div style="flex:1; min-width:120px;">
+                        <div style="font-size:2em; font-weight:bold; color:#25D366;" id="statCitasConfirmadas">0</div>
+                        <div>Citas confirmadas</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+        <!-- Bots activos -->
+        <div id="seccion-bots" class="seccion-admin">
+            <section class="admin-card">
+                <h3>Bots activos</h3>
+                <div id="botsActivos"></div>
+                <h3 style="margin-top:2em;">Citas del usuario</h3>
+                <div id="citasUsuario"></div>
+            </section>
+        </div>
+        <!-- Usuarios -->
+        <div id="seccion-usuarios" class="seccion-admin">
+            <section class="admin-card">
+                <h3>Usuarios</h3>
+                <div id="mensaje"></div>
+                <label for="usuariosSelect">Selecciona usuario:</label>
+                <select id="usuariosSelect"></select>
+                <label for="flujoInput" style="margin-top:1em;">Flujo de campos:</label>
+                <input id="flujoInput" type="text" placeholder="ej: telefono, nombre, vehiculo, trabajo">
+                <button id="guardarFlujoBtn" style="margin-top:1em;">Guardar flujo</button>
+                <div class="separador"></div>
+                <h4 style="margin-top:1em;">Crear nuevo usuario</h4>
+                <form id="nuevoUsuarioForm">
+                    <label for="nuevoUsuario">Nombre de usuario:</label>
+                    <input id="nuevoUsuario" name="nuevoUsuario" type="text" required>
+                    <label for="nuevaPassword">Contraseña:</label>
+                    <input id="nuevaPassword" name="nuevaPassword" type="password" required>
+                    <label for="nuevoFlujo">Flujo de campos:</label>
+                    <input id="nuevoFlujo" name="nuevoFlujo" type="text" placeholder="ej: telefono, nombre, vehiculo, trabajo" required>
+                    <button type="submit" style="margin-top:1em;">Crear usuario</button>
+                </form>
+                <div id="detallesUsuarios" style="margin-top:1.5em;"></div>
+            </section>
+        </div>
+        <!-- Citas -->
+        <div id="seccion-citas" class="seccion-admin">
+            <section class="admin-card">
+                <h3>Citas</h3>
+                <label for="citasUsuariosSelect">Selecciona usuario:</label>
+                <select id="citasUsuariosSelect" style="margin-bottom:1em;"></select>
+                <div id="citasUsuario"></div>
+            </section>
+        </div>
+        <!-- Log general -->
+        <div id="seccion-logs" class="seccion-admin">
+            <section class="admin-card">
+                <h3>Log general del sistema</h3>
+                <div id="logsPanel" style="max-height:200px; overflow-y:auto; background:#222; color:#eee; font-size:0.95em; border-radius:8px; padding:1em;"></div>
+            </section>
+        </div>
+        <!-- Actividad reciente -->
+        <div id="seccion-actividad" class="seccion-admin">
+            <section class="admin-card">
+                <h3>Actividad reciente</h3>
+                <div id="actividadRecientePanel" style="max-height:150px; overflow-y:auto; background:#f8f8f8; border-radius:8px; padding:1em; font-size:0.97em;"></div>
+            </section>
+        </div>
+    </div>
+    <script src="admin.js"></script>
+    <script>
+    // Lógica para crear nuevo usuario
+    document.getElementById('nuevoUsuarioForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const username = document.getElementById('nuevoUsuario').value.trim();
+        const password = document.getElementById('nuevaPassword').value;
+        const flujo = document.getElementById('nuevoFlujo').value.split(',').map(f => f.trim()).filter(f => f);
+        const mensajeDiv = document.getElementById('mensaje');
+        if (!username || !password || flujo.length === 0) {
+            mensajeDiv.textContent = 'Completa todos los campos para crear un usuario.';
+            mensajeDiv.style.color = 'red';
+            return;
+        }
+        // 1. Crear usuario (llamar a una ruta que deberás implementar en backend)
+        fetch('/api/crear-usuario', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) throw new Error(data.message);
+            // 2. Guardar flujo personalizado
+            return fetch(`/api/flujo-usuario/${username}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ fields: flujo })
+            });
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (!data.success) throw new Error(data.message);
+            mensajeDiv.textContent = 'Usuario y flujo creados correctamente.';
+            mensajeDiv.style.color = 'green';
+            // Refrescar lista de usuarios
+            return fetch('/api/usuarios');
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                const usuariosSelect = document.getElementById('usuariosSelect');
+                usuariosSelect.innerHTML = '<option value="">Selecciona un usuario</option>';
+                data.usuarios.forEach(u => {
+                    const opt = document.createElement('option');
+                    opt.value = u;
+                    opt.textContent = u;
+                    usuariosSelect.appendChild(opt);
+                });
+            }
+        })
+        .catch(err => {
+            mensajeDiv.textContent = err.message;
+            mensajeDiv.style.color = 'red';
+        });
+    });
+
+    function mostrarSeccion(seccion) {
+        const secciones = document.querySelectorAll('.seccion-admin');
+        secciones.forEach(s => {
+            s.classList.remove('active');
+        });
+        const botones = document.querySelectorAll('.sidebar-btn');
+        botones.forEach(b => {
+            b.classList.remove('active');
+        });
+        document.getElementById('seccion-' + seccion).classList.add('active');
+        const botonActivo = Array.from(botones).find(b => b.textContent.includes(seccion.charAt(0).toUpperCase() + seccion.slice(1)));
+        if (botonActivo) {
+            botonActivo.classList.add('active');
+        }
+    }
+
+    // Mostrar sección de estadísticas por defecto
+    mostrarSeccion('estadisticas');
+    </script>
+</body>
+<style>
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+    padding: 1.2em 2em 1.2em 2.5em;
+    box-shadow: 0 2px 8px #0001;
+    margin-bottom: 2em;
+    border-radius: 0 0 12px 12px;
+}
+.admin-header-left {
+    display: flex;
+    align-items: center;
+}
+.admin-header-right {
+    font-size: 1.1em;
+}
+@media (max-width: 700px) {
+    .admin-header { flex-direction: column; align-items: flex-start; padding: 1em; }
+    .admin-header-left { margin-bottom: 0.5em; }
+}
+</style>
+</html>

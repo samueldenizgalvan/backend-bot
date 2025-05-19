@@ -126,19 +126,25 @@
 <body>
 
   <nav>
-    <div><strong>WhatsApp Bot</strong></div>
-    <div>
-      <button id="darkModeToggle">🌙</button>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" alt="WhatsApp Bot" style="height:32px;vertical-align:middle;">
+      <span style="font-size:1.2em;font-weight:bold;letter-spacing:0.5px;">WhatsApp Bot</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button id="darkModeToggle" title="Modo oscuro" style="font-size:1.3em;">🌙</button>
+      <button id="logoutBtn" class="logout-btn" style="margin-left:10px;">Cerrar Sesión</button>
     </div>
   </nav>
 
-  <main style="max-width: 800px; margin: 0 auto; padding: 2rem; display: flex; flex-direction: column; gap: 2rem;">
-    <h1>🤖 Bot de WhatsApp</h1>
-    <div class="status">
-      <strong>Estado del Bot:</strong> <span id="botStatus">Desconectado ❌</span>
+  <main style="max-width: 900px; margin: 0 auto; padding: 2rem; display: flex; flex-direction: column; gap: 2rem;">
+    <section style="text-align:center; margin-bottom:1.5em;">
+      <h1 style="color:#25D366;font-size:2.2em;margin-bottom:0.2em;">Panel de Usuario</h1>
+      <div style="color:#555;font-size:1.1em;">Gestiona tus citas y tu bot de WhatsApp de forma sencilla</div>
+    </section>
+    <div class="status" style="display:flex;align-items:center;justify-content:center;gap:1em;">
+      <span style="font-weight:500;">Estado del Bot:</span> <span id="botStatus" style="font-size:1.1em;">Desconectado ❌</span>
     </div>
-
-    <div class="stats">
+    <div class="stats" style="justify-content:space-evenly;">
       <div class="stat-card">
         <h3>🟡 Pendientes</h3>
         <p id="totalPendientes" style="font-size: 2rem;">0</p>
@@ -148,64 +154,56 @@
         <p id="totalConfirmadas" style="font-size: 2rem;">0</p>
       </div>
     </div>
-
-    <div style="text-align: center; margin-top: 20px;">
-      <button onclick="conectarSesion()">Conectarse a la Sesión Actual</button>
-      <button onclick="vincularNuevaCuenta()">Vincular Nueva Cuenta</button>
+    <section style="text-align:center; margin-top:10px;">
+      <button onclick="conectarSesion()" class="confirm-btn" style="min-width:180px;">Conectarse a la Sesión Actual</button>
+      <button onclick="vincularNuevaCuenta()" class="confirm-btn" style="min-width:180px;">Vincular Nueva Cuenta</button>
+    </section>
+    <div style="text-align: center; margin: 1.5em 0 0.5em 0;">
+      <img id="qr" src="" alt="QR de WhatsApp" style="display:none; max-width: 250px; border: 2px solid #25D366; border-radius: 10px; padding: 5px; background:#fff;">
     </div>
-
-    <p style="text-align: center;">Haz clic en un botón para gestionar tu sesión</p>
-    <div style="text-align: center;">
-      <img id="qr" src="" alt="QR de WhatsApp" style="display:none; max-width: 250px; border: 2px solid black; border-radius: 10px; padding: 5px;">
-    </div>
-
-    <h2>Registros</h2>
-<div id="logs" style="background: #ffffff; border: 1px solid #ccc; padding: 10px; width: 100%; text-align: left; max-height: 300px; overflow-y: auto; border-radius: 8px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); font-size: 0.9rem; line-height: 1.4;">
-  <div style="color: #999;">🔄 Esperando actividad...</div>
-</div>
-
-
-    <h3>📋 Citas Pendientes</h3>
-    <table id="tablaPendientes">
-      <thead>
-        <tr>
-          <th>Teléfono</th>
-          <th>Nombre</th>
-          <th>Vehículo</th>
-          <th>Trabajo</th>
-          <th>Fecha deseada</th>
-          <th>Hora deseada</th>
-          <th>Observación</th>
-          <th>Fecha</th>
-          <th>Hora</th>
-          <th>Acción</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-
-    <h3>✅ Citas Confirmadas</h3>
-    <table id="tablaConfirmadas">
-      <thead>
-        <tr>
-          <th>Teléfono</th>
-          <th>Nombre</th>
-          <th>Vehículo</th>
-          <th>Trabajo</th>
-          <th>Observación</th>
-          <th>Fecha</th>
-          <th>Hora</th>
-          <th>Acción</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-
-    <div style="text-align: center; margin-top: 20px;">
-      <button id="logoutBtn" class="logout-btn">Cerrar Sesión</button>
-    </div>
+    <section>
+      <h2 style="color:#25D366;">Registros recientes</h2>
+      <div id="logs"></div>
+    </section>
+    <section style="margin-top:2em;">
+      <h3 style="color:#25D366;">📋 Citas Pendientes</h3>
+      <table id="tablaPendientes">
+        <thead>
+          <tr>
+            <th>Teléfono</th>
+            <th>Nombre</th>
+            <th>Vehículo</th>
+            <th>Trabajo</th>
+            <th>Fecha deseada</th>
+            <th>Hora deseada</th>
+            <th>Observación</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+    <section style="margin-top:2em;">
+      <h3 style="color:#25D366;">✅ Citas Confirmadas</h3>
+      <table id="tablaConfirmadas">
+        <thead>
+          <tr>
+            <th>Teléfono</th>
+            <th>Nombre</th>
+            <th>Vehículo</th>
+            <th>Trabajo</th>
+            <th>Observación</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
   </main>
-
   <footer>
     Hecho por <a href="https://www.linkedin.com/in/samueldeniz" target="_blank">Samuel Déniz Galván</a>
   </footer>

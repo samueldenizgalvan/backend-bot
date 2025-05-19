@@ -3,9 +3,11 @@
     --error: #e74c3c;
 }
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f8f9fa;
+    display: flex;
+    min-height: 100vh;
     margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f8f9fa;
     padding-top: 60px; /* Espacio para la navbar */
 }
 nav {
@@ -134,4 +136,114 @@ body.dark-mode button {
 }
 .dark-mode-toggle:hover {
     opacity: 0.8;
+}
+/* Estilos movidos desde admin.html */
+body { display: flex; min-height: 100vh; margin: 0; font-family: Arial, sans-serif; }
+.sidebar {
+    width: 210px;
+    background: #222;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 2em 0 0 0;
+    min-height: 100vh;
+}
+.sidebar-title {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #25D366;
+    text-align: center;
+    margin-bottom: 2em;
+}
+.sidebar-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.08em;
+    padding: 1em 1.5em;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.sidebar-btn:hover, .sidebar-btn.active {
+    background: #25D366;
+    color: #fff;
+}
+.main-panel {
+    flex: 1;
+    background: #f9f9f9;
+    padding: 2em 3em;
+    min-height: 100vh;
+}
+.seccion-admin { display: none; }
+.seccion-admin.active { display: block; }
+.panel { max-width: 900px; margin: auto; background: #f9f9f9; padding: 2em; border-radius: 8px; box-shadow: 0 2px 8px #0001; }
+label { display: block; margin-top: 1em; }
+input, select, button { margin-top: 0.5em; width: 100%; padding: 0.5em; }
+#mensaje { margin-top: 1em; font-weight: bold; }
+.separador { margin: 2em 0 1em 0; border-bottom: 1px solid #ccc; }
+.admin-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2em;
+}
+.admin-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px #0001;
+    padding: 1.5em 2em;
+    margin-bottom: 2em;
+    min-height: 200px;
+}
+.admin-card h3, .admin-card h4 {
+    color: #25D366;
+    margin-bottom: 0.7em;
+}
+.admin-card label {
+    font-weight: 500;
+}
+.admin-card input, .admin-card select, .admin-card button {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 0.7em;
+}
+.admin-card button {
+    background: #25D366;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.admin-card button:hover {
+    background: #1da851;
+}
+#botsActivos table, #detallesUsuarios table, #citasUsuario table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1em;
+    font-size: 0.97em;
+}
+#botsActivos th, #botsActivos td,
+#detallesUsuarios th, #detallesUsuarios td,
+#citasUsuario th, #citasUsuario td {
+    border: 1px solid #eee;
+    padding: 0.4em 0.7em;
+    text-align: left;
+}
+#botsActivos th, #detallesUsuarios th, #citasUsuario th {
+    background: #f3f3f3;
+}
+#logsPanel {
+    font-family: 'Fira Mono', 'Consolas', monospace;
+    background: #222;
+    color: #eee;
+    border-radius: 8px;
+    padding: 1em;
+    max-height: 200px;
+    overflow-y: auto;
+}
+@media (max-width: 900px) {
+    .main-panel { padding: 1em 0.5em; }
+    .sidebar { width: 100px; font-size: 0.9em; }
 }

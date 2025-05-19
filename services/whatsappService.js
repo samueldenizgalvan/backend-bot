@@ -28,5 +28,30 @@ exports.sendConfirmation = async (username, telefono, fecha, hora) => {
     await client.sendMessage(telefono, mensaje);
 };
 
+// Obtener bots activos
+exports.getBotsActivos = () => {
+    return Array.from(bots.entries()).map(([username, { client }]) => ({
+        username,
+        estado: client.info ? client.info.pushname || 'Activo' : 'Activo'
+    }));
+};
+
+// Control de bots
+exports.startBot = async (username) => {
+    if (!bots.has(username)) {
+        await getOrCreateBot(username);
+    }
+};
+exports.stopBot = (username) => {
+    if (bots.has(username)) {
+        bots.get(username).client.destroy();
+        bots.delete(username);
+    }
+};
+exports.restartBot = async (username) => {
+    exports.stopBot(username);
+    await exports.startBot(username);
+};
+
 // Puedes agregar más funciones multiusuario aquí
 

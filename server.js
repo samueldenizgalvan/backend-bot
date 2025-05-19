@@ -10,6 +10,7 @@ const cron = require('node-cron');
 const authRoutes = require('./routes/authRoutes');
 const citasRoutes = require('./routes/citasRoutes');
 const soporteRoutes = require('./routes/soporteRoutes'); // <-- AGREGA ESTA LÍNEA
+const botService = require('./services/botService');
 
 // Configuración de mailer (ajusta según tu config real)
 const mailer = nodemailer.createTransport({
@@ -44,8 +45,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // WebSocket
 const server = http.createServer(app);
 const io = socketIO(server);
+botService.setIO(io);
 
-// ...configuración de sockets, recordatorios, etc. (igual que antes)...
 const usuariosValidos = { 'admin': 'password123' };
 const TIEMPO_ESPERA = 5 * 60 * 60 * 1000;
 let client = null;
@@ -365,50 +366,30 @@ function cargarCitas() {
 
 // WebSocket
 io.on('connection', socket => {
+  socket.emit('log', '🟢 Cliente conectado a WebSocket');
 
+  socket.on('startBot', () => {
+    botService.iniciarBot();
+  });
 
-    io.on('connection', socket => {
-        socket.emit('log', '🟢 Cliente conectado a WebSocket');
-    
-        socket.on('startBot', () => {
-            eliminarSesionAlReiniciar = true;
-            iniciarBot();
-        });
-    
+  socket.on('stopBot', () => {
+    if (botService.client) {
+      botService.client.destroy().then(() => {
+        io.emit('log', '🛑 Bot de WhatsApp cerrado por el usuario.');
+        botService.client = null;
+      }).catch(err => {
+        console.error('❌ Error al cerrar el bot:', err);
+      });
+    }
+  });
 
-        // 👇 Esto es lo nuevo para apagar el bot
-        socket.on('stopBot', () => {
-            if (client) {
-                client.destroy().then(() => {
-                    io.emit('log', '🛑 Bot de WhatsApp cerrado por el usuario.');
-                    client = null;
-                }).catch(err => {
-                    console.error('❌ Error al cerrar el bot:', err);
-                });
-            }
-        });
-        
-    });
-    
-    // Opción 1: Conectarse a la sesión actual (NO destruye la sesión)
-    socket.on('conectarSesion', async () => {
-        console.log('⚙️ Conectando a la sesión existente...');
-        io.emit('log', '⚙️ Intentando conectar con la sesión existente...');
-
-        // Si el cliente ya existe, avisamos
-        if (client) {
-            console.log('⚠️ El bot ya está en ejecución.');
-            io.emit('log', '⚠️ El bot ya está en ejecución. No se generará un nuevo QR.');
-            return;
-        }
-        // Si no hay cliente, se crea y se usará la carpeta .wwebjs_auth si existe
-        crearNuevoCliente();
-    });
-    socket.emit('log', '🟢 Cliente conectado a WebSocket');
-    socket.on('startBot', () => {
-        eliminarSesionAlReiniciar = true;
-        iniciarBot();
-    });
+  socket.on('conectarSesion', async () => {
+    if (botService.client) {
+      io.emit('log', '⚠️ El bot ya está en ejecución. No se generará un nuevo QR.');
+      return;
+    }
+    botService.crearNuevoCliente();
+  });
 });
 
 // Iniciar servidor y cargar citas
