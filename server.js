@@ -396,7 +396,7 @@ io.on('connection', socket => {
 
 // Ensure the root route always serves login.html
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
 // Eliminar cualquier fallback genérico
