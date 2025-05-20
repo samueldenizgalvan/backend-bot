@@ -15,11 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const initCaptchaSystem = () => {
         const captchaConfigs = [
             {
-                formId: 'soporteForm',
-                labelId: 'captchaLabel',
-                inputId: 'captchaInput'
-            },
-            {
                 formId: 'botRequestForm',
                 labelId: 'captchaBotLabel',
                 inputId: 'captchaBotInput'
@@ -47,29 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
                 // Lógica de envío específica para cada formulario
-                if (config.formId === 'soporteForm') {
-                    const payload = {
-                        nombre: document.getElementById('nombre')?.value,
-                        empresa: document.getElementById('empresa')?.value,
-                        telefono: document.getElementById('telefono')?.value,
-                        descripcion: document.getElementById('descripcion')?.value
-                    };
-                    fetch('/api/soporte', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Formulario de soporte enviado correctamente.');
-                            form.reset();
-                        } else {
-                            alert('Error al enviar el formulario de soporte.');
-                        }
-                    })
-                    .catch(() => alert('Error de red al enviar el formulario.'));
-                } else if (config.formId === 'botRequestForm') {
+                if (config.formId === 'botRequestForm') {
                     const payload = {
                         botName: document.getElementById('botName')?.value,
                         botPhone: document.getElementById('botPhone')?.value,

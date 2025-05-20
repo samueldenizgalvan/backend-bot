@@ -4,7 +4,7 @@ Este es el backend Node.js para gestionar bots de WhatsApp multiusuario y la API
 
 ## Estructura
 - `server.js`: Entrada principal del backend.
-- `/routes`: Rutas de la API (autenticación, soporte, citas).
+- `/routes`: Rutas de la API (autenticación, citas).
 - `/controllers`: Lógica de cada endpoint.
 - `/services`: Servicios de negocio (WhatsApp, email, etc).
 - `/config`: Configuración de servicios.

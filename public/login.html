@@ -181,7 +181,7 @@
       color: #444;
     }
     /* Unifica los formularios */
-    form.modern-form, .login-box form, #botRequestForm, #soporteForm {
+    form.modern-form, .login-box form, #botRequestForm {
       display: flex;
       flex-direction: column;
       gap: 1.1rem;
@@ -199,7 +199,7 @@
       position: relative;
       margin-bottom: 0.5em;
     }
-    .modern-input-group label, .login-box label, #botRequestForm label, #soporteForm label {
+    .modern-input-group label, .login-box label, #botRequestForm label {
       font-size: 1em;
       color: #5a4b7c;
       font-weight: 500;
@@ -214,8 +214,7 @@
     }
     .modern-input-group input, .modern-input-group textarea,
     .login-box input, .login-box textarea,
-    #botRequestForm input, #botRequestForm textarea,
-    #soporteForm input, #soporteForm textarea {
+    #botRequestForm input, #botRequestForm textarea {
       width: 100%;
       padding: 1.5em 1em;
       border-radius: 18px;
@@ -233,8 +232,7 @@
     }
     .modern-input-group input:focus, .modern-input-group textarea:focus,
     .login-box input:focus, .login-box textarea:focus,
-    #botRequestForm input:focus, #botRequestForm textarea:focus,
-    #soporteForm input:focus, #soporteForm textarea:focus {
+    #botRequestForm input:focus, #botRequestForm textarea:focus {
       border: 1.5px solid #a18cd1;
       background: #fff;
       box-shadow: 0 0 0 3px #a18cd133;
@@ -244,9 +242,7 @@
     .login-box input:focus + label, .login-box input:not(:placeholder-shown) + label,
     .login-box textarea:focus + label, .login-box textarea:not(:placeholder-shown) + label,
     #botRequestForm input:focus + label, #botRequestForm input:not(:placeholder-shown) + label,
-    #botRequestForm textarea:focus + label, #botRequestForm textarea:not(:placeholder-shown) + label,
-    #soporteForm input:focus + label, #soporteForm input:not(:placeholder-shown) + label,
-    #soporteForm textarea:focus + label, #soporteForm textarea:not(:placeholder-shown) + label {
+    #botRequestForm textarea:focus + label, #botRequestForm textarea:not(:placeholder-shown) + label {
       top: -0.7em;
       left: 0.8em;
       font-size: 0.88em;
@@ -256,7 +252,7 @@
       border-radius: 6px;
       box-shadow: 0 1px 4px #fbc2eb22;
     }
-    .login-box button, #botRequestForm button, #soporteForm button {
+    .login-box button, #botRequestForm button {
       padding: 0.8em 2em;
       border-radius: 20px;
       background: linear-gradient(90deg, #6a4bc7 60%, #a18cd1 100%);
@@ -267,11 +263,11 @@
       cursor: pointer;
       transition: transform 0.2s, box-shadow 0.3s;
     }
-    .login-box button:hover, #botRequestForm button:hover, #soporteForm button:hover {
+    .login-box button:hover, #botRequestForm button:hover {
       transform: scale(1.05);
       box-shadow: 0 4px 15px rgba(106, 75, 199, 0.3);
     }
-    .login-box button:active, #botRequestForm button:active, #soporteForm button:active {
+    .login-box button:active, #botRequestForm button:active {
       transform: scale(0.98);
     }
     .modern-btn {
