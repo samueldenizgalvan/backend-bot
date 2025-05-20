@@ -74,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         botName: document.getElementById('botName')?.value,
                         botPhone: document.getElementById('botPhone')?.value,
                         botEmail: document.getElementById('botEmail')?.value,
-                        botDetails: document.getElementById('botDetails')?.value // Asegúrate de que este ID exista en el formulario
+                        botDetails: document.getElementById('botDetails')?.value // Captura correctamente el campo de detalles
                     };
                     fetch('/api/send-email', {
                         method: 'POST',
