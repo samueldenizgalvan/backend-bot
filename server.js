@@ -33,6 +33,12 @@ app.use(session({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Inicializar almacenamiento en memoria para citas
+const citasPendientes = new Map();
+const citasConfirmadas = new Map();
+app.set('citasPendientes', citasPendientes);
+app.set('citasConfirmadas', citasConfirmadas);
+
 // Routes
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
 app.post('/login', (req, res) => {
