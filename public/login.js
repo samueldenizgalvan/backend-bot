@@ -71,26 +71,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     .catch(() => alert('Error de red al enviar el formulario.'));
                 } else if (config.formId === 'botRequestForm') {
                     const payload = {
-                        empresaBot: document.getElementById('empresaBot')?.value,
-                        contactoBot: document.getElementById('contactoBot')?.value,
-                        infoCliente: document.getElementById('infoCliente')?.value,
-                        observacionesBot: document.getElementById('observacionesBot')?.value
+                        botName: document.getElementById('botName')?.value,
+                        botPhone: document.getElementById('botPhone')?.value,
+                        botEmail: document.getElementById('botEmail')?.value,
+                        botDetails: document.getElementById('botDetails')?.value
                     };
-                    fetch('/api/bot-request', {
+                    fetch('/api/send-email', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
+                        body: JSON.stringify({
+                            to: 'administrador@bot-whatsapp.es',
+                            subject: 'Nueva solicitud de Bot de WhatsApp',
+                            text: `Nombre: ${payload.botName}\nTeléfono: ${payload.botPhone}\nEmail: ${payload.botEmail}\nDetalles: ${payload.botDetails}`
+                        })
                     })
                     .then(res => res.json())
                     .then(data => {
                         if (data.success) {
-                            alert('Formulario de solicitud de bot enviado correctamente.');
+                            alert('Solicitud enviada correctamente.');
                             form.reset();
                         } else {
-                            alert('Error al enviar el formulario de solicitud de bot.');
+                            alert('Error al enviar la solicitud.');
                         }
                     })
-                    .catch(() => alert('Error de red al enviar el formulario.'));
+                    .catch(() => alert('Error de red al enviar la solicitud.'));
                 }
                 // Regenerar captcha después del envío
                 currentAnswer = generateCaptcha(label);
