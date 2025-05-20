@@ -28,7 +28,7 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'default_secret',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false, httpOnly: true, maxAge: 24*60*60*1000 }
+  cookie: { secure: false, httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }
 }));
 
 // 1) Sirve estáticos
@@ -37,10 +37,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // 2) Ruta raíz con control de sesión
 app.get('/', (req, res) => {
   if (!req.session.usuario) {
-    // Sin iniciar → login
     return res.sendFile(path.join(__dirname, 'public', 'login.html'));
   }
-  // Con sesión → panel según rol
   if (req.session.usuario === 'admin') {
     return res.sendFile(path.join(__dirname, 'public', 'admin.html'));
   }
@@ -75,25 +73,14 @@ app.get('/api/flujo-usuario', (req, res) =>
   res.json(getUserFlowFields())
 );
 
-// 3) WebSocket con listeners siempre funciones válidas
+// 3) WebSocket con listeners válidos
 io.on('connection', socket => {
   socket.emit('log', '🟢 Cliente conectado a WebSocket');
 
-  socket.on('startBot', () => {
-    botService.iniciarBot();
-  });
-
-  socket.on('stopBot', () => {
-    botService.stopBot();
-  });
-
-  socket.on('conectarSesion', () => {
-    botService.crearNuevoCliente();
-  });
-
-  socket.on('message', msg => {
-    manejarMensaje(msg, botService.client, io);
-  });
+  socket.on('startBot', () => botService.iniciarBot());
+  socket.on('stopBot', () => botService.stopBot());
+  socket.on('conectarSesion', () => botService.crearNuevoCliente());
+  socket.on('message', msg => manejarMensaje(msg, botService.client, io));
 });
 
 // 4) Cron para recordatorios
