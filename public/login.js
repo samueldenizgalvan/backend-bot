@@ -355,6 +355,117 @@ document.addEventListener('DOMContentLoaded', () => {
                 ease: 'power1.inOut'
             });
         });
+
+        // Animación para "Plan a tu medida"
+        const planTexts = document.querySelectorAll('#precios .gsap-card ul li');
+        planTexts.forEach((text) => {
+            text.addEventListener('mouseenter', () => {
+                gsap.to(text, {
+                    x: 10,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+            text.addEventListener('mouseleave', () => {
+                gsap.to(text, {
+                    x: 0,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Animación para "Cómo funciona este bot"
+        const botFunctionTexts = document.querySelectorAll('#funciona .gsap-card ul li');
+        botFunctionTexts.forEach((text) => {
+            text.addEventListener('mouseenter', () => {
+                gsap.to(text, {
+                    x: 10,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+            text.addEventListener('mouseleave', () => {
+                gsap.to(text, {
+                    x: 0,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Animación para el nav
+        const navLinks = document.querySelectorAll('nav .nav-link');
+        navLinks.forEach((link) => {
+            link.addEventListener('mouseenter', () => {
+                gsap.to(link, {
+                    scale: 1.1,
+                    duration: 0.2,
+                    ease: 'power2.out'
+                });
+            });
+            link.addEventListener('mouseleave', () => {
+                gsap.to(link, {
+                    scale: 1,
+                    duration: 0.2,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Animación continua hacia la derecha para los precios
+        const priceElements = document.querySelectorAll('#precios .gsap-card p');
+        priceElements.forEach((price) => {
+            gsap.to(price, {
+                x: 10, // Cambia el desplazamiento hacia la derecha
+                rotation: 15, // Cambia la rotación hacia la derecha
+                scale: 1.3,
+                color: '#ff4081',
+                duration: 2,
+                ease: 'elastic.inOut(1, 0.3)',
+                yoyo: true,
+                repeat: -1 // Repetir indefinidamente
+            });
+        });
+    };
+
+    // Animaciones sutiles para campos de entrada y botones
+    const initInputAnimations = () => {
+        const inputs = document.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                gsap.to(input, {
+                    scale: 1.05,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+            input.addEventListener('blur', () => {
+                gsap.to(input, {
+                    scale: 1,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', () => {
+                gsap.to(button, {
+                    scale: 1.1,
+                    duration: 0.2,
+                    ease: 'power2.out'
+                });
+            });
+            button.addEventListener('mouseleave', () => {
+                gsap.to(button, {
+                    scale: 1,
+                    duration: 0.2,
+                    ease: 'power2.out'
+                });
+            });
+        });
     };
 
     // Inicializar todo
@@ -362,6 +473,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initCaptchaSystem();
     setupModals();
     initGSAPAnimations();
+    initInputAnimations();
 });
 
 // ===== GSAP ANIMACIONES MODERNAS LOGIN =====
