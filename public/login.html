@@ -1,106 +1,456 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Bot WhatsApp</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iniciar sesión - WhatsApp Bot</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="login.js" defer></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+      color: #2d2d3a;
+      min-height: 100vh;
+    }
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      background: rgba(60, 40, 120, 0.85);
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.8rem 1.5rem;
+      box-shadow: 0 2px 8px rgba(80,40,120,0.10);
+      z-index: 1000;
+      backdrop-filter: blur(6px);
+    }
+    nav .nav-link {
+      color: #fff;
+      margin-left: 20px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
+      cursor: pointer;
+    }
+    nav .nav-link:hover {
+      color: #fbc2eb;
+    }
+    .login-container {
+      max-width: 420px;
+      margin: 90px auto 2.5rem auto;
+      background: rgba(255,255,255,0.35);
+      border-radius: 22px;
+      box-shadow: 0 8px 32px 0 rgba(161,140,209,0.18), 0 1.5px 6px 0 rgba(0,0,0,0.04);
+      padding: 2.5rem 2.2rem 2rem 2.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    h1 {
+      font-size: 1.6em;
+      color: #6a4bc7;
+      margin-bottom: 0.7em;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 8px #fbc2eb33;
+    }
+    .input-group {
+      width: 100%;
+      margin-bottom: 1.1em;
+      position: relative;
+    }
+    label {
+      font-size: 1em;
+      color: #5a4b7c;
+      margin-bottom: 0.3em;
+      font-weight: 500;
+      display: block;
+      position: absolute;
+      top: 1.1em;
+      left: 1.1em;
+      pointer-events: none;
+      transition: 0.2s;
+      background: transparent;
+      padding: 0 0.2em;
+    }
+    input[type="text"], input[type="password"], input[type="tel"], textarea {
+      width: 100%;
+      padding: 1.2em 1em 1.2em 1em;
+      border-radius: 14px;
+      border: 1.5px solid #e0d7f3;
+      background: rgba(255,255,255,0.65);
+      font-size: 1.08em;
+      transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+      outline: none;
+      box-sizing: border-box;
+      margin-bottom: 0.2em;
+      color: #2d2d3a;
+      backdrop-filter: blur(2px);
+    }
+    input:focus, textarea:focus {
+      border: 1.5px solid #a18cd1;
+      background: #fff;
+      box-shadow: 0 0 0 2px #a18cd133;
+    }
+    input:focus + label, input:not(:placeholder-shown) + label,
+    textarea:focus + label, textarea:not(:placeholder-shown) + label {
+      top: -0.7em;
+      left: 0.8em;
+      font-size: 0.88em;
+      color: #6a4bc7;
+      background: #fff;
+      padding: 0 0.4em;
+      border-radius: 6px;
+      box-shadow: 0 1px 4px #fbc2eb22;
+    }
+    button[type="submit"] {
+      width: 100%;
+      padding: 1em 0;
+      background: linear-gradient(90deg, #a18cd1 60%, #fbc2eb 100%);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.13em;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 0.2em;
+      box-shadow: 0 2px 12px #a18cd122;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+      letter-spacing: 0.5px;
+    }
+    button[type="submit"]:hover {
+      background: linear-gradient(90deg, #fbc2eb 60%, #a18cd1 100%);
+      box-shadow: 0 4px 18px #a18cd133;
+      transform: translateY(-2px) scale(1.03);
+    }
+    .error-message {
+      color: #e74c3c;
+      background: #fff0f7;
+      border-radius: 8px;
+      padding: 0.6em 1em;
+      font-size: 0.98em;
+      text-align: center;
+      margin-bottom: 0.5em;
+      min-height: 1.2em;
+      border: 1px solid #fbc2eb55;
+    }
+    .version {
+      margin-top: 1.2em;
+      font-size: 0.85em;
+      color: #b6a6d6;
+      text-align: center;
+    }
+    /* Moderniza tarjetas y secciones */
+    section[id], .login-box, form, .info-box, .card {
+      border-radius: 18px;
+      box-shadow: 0 4px 24px #a18cd111;
+      background: rgba(255,255,255,0.55);
+      backdrop-filter: blur(8px);
+      border: 1.5px solid #e0d7f3;
+      margin-bottom: 2rem;
+      transition: box-shadow 0.3s, background 0.3s;
+    }
+    .card {
+      padding: 2rem;
+      width: 300px;
+      text-align: left;
+      margin: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+    .card h3 {
+      color: #6a4bc7;
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+    .card p {
+      color: #444;
+    }
+    /* Unifica los formularios */
+    form.modern-form, .login-box form, #botRequestForm, #soporteForm {
+      display: flex;
+      flex-direction: column;
+      gap: 1.1rem;
+      background: rgba(255,255,255,0.35);
+      border-radius: 18px;
+      box-shadow: 0 4px 24px #a18cd111;
+      padding: 2rem 1.5rem;
+      border: 1.5px solid #e0d7f3;
+      max-width: 420px;
+      margin: 0 auto;
+      position: relative;
+    }
+    .input-group, .modern-input-group {
+      width: 100%;
+      position: relative;
+      margin-bottom: 0.5em;
+    }
+    .modern-input-group label, .login-box label, #botRequestForm label, #soporteForm label {
+      font-size: 1em;
+      color: #5a4b7c;
+      font-weight: 500;
+      position: absolute;
+      top: 1.1em;
+      left: 1.1em;
+      pointer-events: none;
+      transition: 0.2s;
+      background: transparent;
+      padding: 0 0.2em;
+      z-index: 2;
+    }
+    .modern-input-group input, .modern-input-group textarea,
+    .login-box input, .login-box textarea,
+    #botRequestForm input, #botRequestForm textarea,
+    #soporteForm input, #soporteForm textarea {
+      width: 100%;
+      padding: 1.2em 1em 1.2em 1em;
+      border-radius: 14px;
+      border: 1.5px solid #e0d7f3;
+      background: rgba(255,255,255,0.65);
+      font-size: 1.08em;
+      transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+      outline: none;
+      box-sizing: border-box;
+      margin-bottom: 0.2em;
+      color: #2d2d3a;
+      backdrop-filter: blur(2px);
+      position: relative;
+      z-index: 1;
+    }
+    .modern-input-group input:focus, .modern-input-group textarea:focus,
+    .login-box input:focus, .login-box textarea:focus,
+    #botRequestForm input:focus, #botRequestForm textarea:focus,
+    #soporteForm input:focus, #soporteForm textarea:focus {
+      border: 1.5px solid #a18cd1;
+      background: #fff;
+      box-shadow: 0 0 0 2px #a18cd133;
+    }
+    .modern-input-group input:focus + label, .modern-input-group input:not(:placeholder-shown) + label,
+    .modern-input-group textarea:focus + label, .modern-input-group textarea:not(:placeholder-shown) + label,
+    .login-box input:focus + label, .login-box input:not(:placeholder-shown) + label,
+    .login-box textarea:focus + label, .login-box textarea:not(:placeholder-shown) + label,
+    #botRequestForm input:focus + label, #botRequestForm input:not(:placeholder-shown) + label,
+    #botRequestForm textarea:focus + label, #botRequestForm textarea:not(:placeholder-shown) + label,
+    #soporteForm input:focus + label, #soporteForm input:not(:placeholder-shown) + label,
+    #soporteForm textarea:focus + label, #soporteForm textarea:not(:placeholder-shown) + label {
+      top: -0.7em;
+      left: 0.8em;
+      font-size: 0.88em;
+      color: #6a4bc7;
+      background: #fff;
+      padding: 0 0.4em;
+      border-radius: 6px;
+      box-shadow: 0 1px 4px #fbc2eb22;
+    }
+    .login-box button, #botRequestForm button, #soporteForm button {
+      width: 100%;
+      padding: 1em 0;
+      background: linear-gradient(90deg, #a18cd1 60%, #fbc2eb 100%);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.13em;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 0.2em;
+      box-shadow: 0 2px 12px #a18cd122;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+      letter-spacing: 0.5px;
+    }
+    .login-box button:hover, #botRequestForm button:hover, #soporteForm button:hover {
+      background: linear-gradient(90deg, #fbc2eb 60%, #a18cd1 100%);
+      box-shadow: 0 4px 18px #a18cd133;
+      transform: translateY(-2px) scale(1.03);
+    }
+    .modern-btn {
+      display: inline-block;
+      background: linear-gradient(90deg, #6a4bc7 60%, #a18cd1 100%);
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      font-size: 1.15em;
+      font-weight: 600;
+      padding: 0.9em 2.2em;
+      box-shadow: 0 4px 18px #a18cd133;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+      cursor: pointer;
+      margin-top: 0.5em;
+    }
+    .modern-btn:hover {
+      background: linear-gradient(90deg, #a18cd1 60%, #6a4bc7 100%);
+      box-shadow: 0 6px 24px #a18cd144;
+      transform: translateY(-2px) scale(1.04);
+    }
+    /* Modal y overlay */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(40,30,70,0.18);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    .modal {
+      background: rgba(255,255,255,0.95);
+      border-radius: 22px;
+      box-shadow: 0 8px 32px 0 rgba(161,140,209,0.18), 0 1.5px 6px 0 rgba(0,0,0,0.04);
+      padding: 2.5rem 2.2rem 2rem 2.2rem;
+      max-width: 440px;
+      width: 95vw;
+      position: relative;
+      animation: modalPop 0.4s cubic-bezier(.68,-0.55,.27,1.55);
+    }
+    @keyframes modalPop {
+      0% { opacity: 0; transform: scale(0.85) translateY(40px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .modal-close {
+      position: absolute;
+      top: 1.1rem;
+      right: 1.1rem;
+      background: none;
+      border: none;
+      font-size: 1.5em;
+      color: #a18cd1;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .modal-close:hover { color: #6a4bc7; }
+    /* Responsive tarjetas y formularios */
+    @media (max-width: 900px) {
+      .card { width: 90vw; max-width: 400px; }
+      .login-container { margin: 70px auto 1.5rem auto; padding: 1.5rem 1rem; }
+      h1 { font-size: 1.2em; }
+    }
+    @media (max-width: 600px) {
+      .card { width: 98vw; max-width: 98vw; }
+      .login-container { padding: 1.2rem 0.7rem 1.2rem 0.7rem; max-width: 98vw; }
+      h1 { font-size: 1.1em; }
+    }
+    @media (max-width: 400px) {
+      .login-container { padding: 0.7rem 0.2rem; }
+      h1 { font-size: 1em; }
+    }
+    /* Moderniza el footer */
+    footer {
+      background: rgba(161,140,209,0.10);
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #6a4bc7;
+      border-top: 1px solid #e0d7f3;
+      letter-spacing: 0.2px;
+    }
+    footer a { color: #6a4bc7; text-decoration: none; font-weight: bold; }
+    footer a:hover { color: #fbc2eb; }
+    .login-prominent {
+      background: linear-gradient(90deg, #6a4bc7 60%, #a18cd1 100%) !important;
+      color: #fff !important;
+      font-size: 1.18em !important;
+      font-weight: 700 !important;
+      border-radius: 18px !important;
+      box-shadow: 0 4px 18px #a18cd133 !important;
+      border: 2.5px solid #fff !important;
+      padding: 0.6em 1.5em !important;
+      margin-left: 0 !important;
+      margin-right: 18px !important;
+      transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+    }
+    .login-prominent:hover {
+      background: linear-gradient(90deg, #a18cd1 60%, #6a4bc7 100%) !important;
+      box-shadow: 0 6px 24px #a18cd144 !important;
+      transform: translateY(-2px) scale(1.04);
+    }
+    .precios-info-cards .info-card {
+      transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .precios-info-cards .info-card:hover {
+      box-shadow: 0 8px 32px #a18cd144;
+      transform: translateY(-4px) scale(1.04);
+    }
+  </style>
 </head>
 <body>
-    <nav>
-        <div><strong>WhatsApp Bot Para empresas</strong></div>
-        <div>
-            <a href="#funciona">Cómo funciona</a>
-            <a href="#Soporte">Soporte</a>
-            <a href="#precios">Precios</a>
-            <a href="#quieroBot">Quiero mi bot</a>
-            <a id="darkModeToggle" class="dark-mode-toggle">🌙</a>
+    <nav style="z-index: 2002; position: fixed; top: 0; left: 0; right: 0; background: rgba(60, 40, 120, 0.85); color: white; display: flex; justify-content: space-between; align-items: center; padding: 0.8rem 1.5rem; box-shadow: 0 2px 8px rgba(80,40,120,0.10); backdrop-filter: blur(6px);">
+        <div style="display: flex; align-items: center; gap: 1.5rem;">
+            <a id="showLoginBtn" class="nav-link login-prominent" style="font-size:1.18em; padding:0.7em 1.7em; background: linear-gradient(90deg, #6a4bc7 60%, #a18cd1 100%); border-radius: 18px; box-shadow: 0 4px 18px #a18cd133; font-weight:700; margin-right: 1.2em; letter-spacing:0.5px; border:2.5px solid #fff; color:#fff; transition: background 0.2s, box-shadow 0.2s, transform 0.1s;">Iniciar sesión</a>
+            <a href="#funciona" class="nav-link">Cómo funciona</a>
+            <a href="#precios" class="nav-link">Precios</a>
+            <a href="#quieroBot" class="nav-link">Quiero mi bot</a>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.7em; position: relative;">
+          <strong>WhatsApp Bot Para empresas</strong>
+          <span id="infoLegalBtn" style="font-size:0.92em; color:#fff; background:rgba(0,0,0,0.22); border-radius:8px; padding:0.18em 0.7em; cursor:pointer; font-weight:500; transition:background 0.2s; border:1px solid #fff2; margin-left:0.5em; opacity:0.85;">más información</span>
         </div>
     </nav>
 
-    <!-- LOGIN -->
-    <div class="login-box">
-        <div class="logo">Iniciar Sesión</div>
-        <form id="loginForm">
+    <!-- LOGIN MODAL -->
+    <div id="loginModal" class="modal-overlay" style="display:none;">
+      <div class="modal">
+        <button class="modal-close" id="closeLoginModal">×</button>
+        <h2 style="color:#6a4bc7; text-align:center; margin-bottom:1.2em;">Iniciar Sesión</h2>
+        <form id="loginForm" class="modern-form">
             <div class="input-group">
+                <input type="text" id="username" name="username" required autocomplete="username" placeholder=" " />
                 <label for="username">Usuario</label>
-                <input type="text" id="username" name="username" required autocomplete="username" placeholder="administrador">
             </div>
             <div class="input-group">
+                <input type="password" id="password" name="password" required autocomplete="current-password" placeholder=" " />
                 <label for="password">Contraseña</label>
-                <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="••••••••">
             </div>
             <button type="submit">Entrar</button>
             <div class="error-message" id="error-message"></div>
             <div class="version">v1.0.0</div>
         </form>
+      </div>
     </div>
 
     <!-- Cómo funciona este bot -->
-    <section id="funciona" style="padding: 4rem 2rem; background: #f8f9fa; text-align: center;">
-    <h2 style="font-size: 2rem; margin-bottom: 1rem;">¿Cómo funciona este bot?</h2>
+    <section id="funciona" class="gsap-section" style="padding: 4rem 2rem; background: #f8f9fa; text-align: center;">
+    <h2 style="font-size: 2rem; margin-bottom: 1rem; color: #6a4bc7;">¿Cómo funciona este bot?</h2>
     <p style="max-width: 800px; margin: 0 auto 3rem; color: #555;">
         Automatiza la gestión de citas de tu negocio a través de WhatsApp con un sistema simple, eficaz y sin complicaciones.
     </p>
-
     <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; max-width: 1200px; margin: 0 auto;">
-        <div style="background: white; border: 1px solid #ddd; border-radius: 10px; padding: 2rem; width: 300px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); text-align: left;">
-            <h3 style="color: #25D366; font-size: 1.3rem;">📩 Solicitudes vía WhatsApp</h3>
-            <p style="color: #444;">Tus clientes pueden enviar una solicitud de cita de forma rápida y sencilla, sin apps adicionales.</p>
+        <div class="card gsap-card">
+            <h3>📩 Solicitudes vía WhatsApp</h3>
+            <p>Tus clientes pueden enviar una solicitud de cita de forma rápida y sencilla, sin apps adicionales.</p>
         </div>
-
-        <div style="background: white; border: 1px solid #ddd; border-radius: 10px; padding: 2rem; width: 300px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); text-align: left;">
-            <h3 style="color: #25D366; font-size: 1.3rem;">📊 Panel de gestión</h3>
-            <p style="color: #444;">Recibe las solicitudes en un panel web donde podrás revisarlas y confirmarlas en segundos.</p>
+        <div class="card gsap-card">
+            <h3>📊 Panel de gestión</h3>
+            <p>Recibe las solicitudes en un panel web donde podrás revisarlas y confirmarlas en segundos.</p>
         </div>
-
-        <div style="background: white; border: 1px solid #ddd; border-radius: 10px; padding: 2rem; width: 300px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); text-align: left;">
-            <h3 style="color: #25D366; font-size: 1.3rem;">✅ Confirmaciones automáticas</h3>
-            <p style="color: #444;">El bot enviará automáticamente la confirmación de la cita a tus clientes.</p>
+        <div class="card gsap-card">
+            <h3>✅ Confirmaciones automáticas</h3>
+            <p>El bot enviará automáticamente la confirmación de la cita a tus clientes.</p>
         </div>
-
-        <div style="background: white; border: 1px solid #ddd; border-radius: 10px; padding: 2rem; width: 300px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); text-align: left;">
-            <h3 style="color: #25D366; font-size: 1.3rem;">⏰ Recordatorios previos</h3>
-            <p style="color: #444;">Tus clientes recibirán un recordatorio unos días antes de la cita para reducir inasistencias.</p>
-        </div>
-
-        <div style="background: white; border: 1px solid #ddd; border-radius: 10px; padding: 2rem; width: 300px; box-shadow: 0 3px 10px rgba(0,0,0,0.05); text-align: left;">
-            <h3 style="color: #25D366; font-size: 1.3rem;">💳 Gastos de cancelación</h3>
-            <p style="color: #444;">Opcionalmente puedes aplicar un cargo por cancelaciones de última hora si así lo deseas.</p>
+        <div class="card gsap-card">
+            <h3>⏰ Recordatorios previos</h3>
+            <p>Tus clientes recibirán un recordatorio unos días antes de la cita para reducir inasistencias.</p>
         </div>
     </div>
 </section>
 
-    <!-- SECCIÓN SOPORTE -->
-    <section id="Soporte" style="padding: 3rem; text-align: center; background: #f1f1f1;">
-      <h2>Soporte</h2>
-      <div class="login-box">
-        <h2>Contacto Soporte</h2>
-        <form id="soporteForm">
-            <label for="nombre">Nombre</label>
-            <input id="nombre" name="nombre" required>
-            <label for="empresa">Empresa</label>
-            <input id="empresa" name="empresa" required>
-            <label for="telefono">Teléfono</label>
-            <input id="telefono" name="telefono" required>
-            <label for="descripcion">Descripción</label>
-            <textarea id="descripcion" name="descripcion" required></textarea>
-            <!-- CAPTCHA -->
-            <label id="captchaLabel" for="captchaInput"></label>
-            <input id="captchaInput" type="text" required placeholder="Respuesta">
-            <button type="submit">Enviar</button>
-        </form>
-    </div>
-    </section>
-
     <!-- SECCIÓN PRECIOS -->
-    <section id="precios" style="padding: 3rem; text-align: center; background: #ffffff;">
-    <h2 style="font-size: 2rem; margin-bottom: 1rem;">Plan a tu medida</h2>
-
+    <section id="precios" class="gsap-section" style="padding: 3rem; text-align: center; background: #ffffff;">
+    <h2 style="font-size: 2rem; margin-bottom: 1rem; color: #6a4bc7;">Plan a tu medida</h2>
     <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
-        <div style="background: #f8f9fa; border: 1px solid #ddd; border-radius: 10px; padding: 2rem; width: 280px; box-shadow: 0 3px 10px rgba(0,0,0,0.05);">
-            <h3 style="color: #25D366; font-size: 1.5rem; margin-bottom: 0.5rem;">Pack Profesional</h3>
-            <p style="font-size: 1.2rem; margin-bottom: 1rem;">50€/mes</p>
+        <div class="card gsap-card">
+            <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Pack Profesional</h3>
+            <p style="font-size: 1.2rem; margin-bottom: 1rem; color: #6a4bc7;">50€/mes</p>
             <ul style="list-style: none; padding: 0; color: #444; text-align: left;">
                 <li>✅ Bot WhatsApp personalizado</li>
                 <li>✅ Confirmación de citas</li>
@@ -108,10 +458,9 @@
                 <li>✅ Página web con subdominio</li>
             </ul>
         </div>
-
-        <div style="background: #f8f9fa; border: 1px solid #ddd; border-radius: 10px; padding: 2rem; width: 280px; box-shadow: 0 3px 10px rgba(0,0,0,0.05);">
-            <h3 style="color: #25D366; font-size: 1.5rem; margin-bottom: 0.5rem;">Mantenimiento</h3>
-            <p style="font-size: 1.2rem; margin-bottom: 1rem;">20€/mes</p>
+        <div class="card gsap-card">
+            <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Mantenimiento</h3>
+            <p style="font-size: 1.2rem; margin-bottom: 1rem; color: #6a4bc7;">20€/mes</p>
             <ul style="list-style: none; padding: 0; color: #444; text-align: left;">
                 <li>✅ Actualizaciones</li>
                 <li>✅ Soporte técnico</li>
@@ -120,74 +469,120 @@
             </ul>
         </div>
     </div>
-
-    <p style="margin-top: 2rem;">
-        <a href="#Quiero mi bot" style="background: #25D366; color: white; padding: 0.8rem 2rem; border-radius: 5px; text-decoration: none; font-weight: bold;">Solicita tu bot ahora</a>
-    </p>
-    <p style="margin-top: 2rem; color: #777; font-size: 0.85rem;">
-    🔒 Pago seguro mediante Bizum o transferencia. <br>
-    📞 Soporte personalizado para cada cliente. <br>
-    🚀 Entrega rápida y acompañamiento hasta la activación.
-</p>
-
+    <!-- Modern info cards for payment/support/delivery -->
+    <div id="infoCardsRow" style="display: flex; justify-content: center; gap: 1.5rem; margin-top: 2.5rem; flex-wrap: wrap;">
+  <div class="info-card gsap-info-card" style="background: rgba(255,255,255,0.7); border-radius: 18px; box-shadow: 0 4px 24px #a18cd122; padding: 1.3rem 2.1rem; min-width: 220px; display: flex; align-items: center; gap: 1.1rem; border: 1.5px solid #e0d7f3;">
+    <span style="font-size:2em; color:#6a4bc7;">🔒</span>
+    <div>
+      <div style="font-weight:600; color:#6a4bc7; font-size:1.08em;">Pago seguro</div>
+      <div style="font-size:0.98em; color:#555;">Bizum o transferencia</div>
+    </div>
+  </div>
+  <div class="info-card gsap_info-card" style="background: rgba(255,255,255,0.7); border-radius: 18px; box-shadow: 0 4px 24px #a18cd122; padding: 1.3rem 2.1rem; min-width: 220px; display: flex; align-items: center; gap: 1.1rem; border: 1.5px solid #e0d7f3;">
+    <span style="font-size:2em; color:#6a4bc7;">📞</span>
+    <div>
+      <div style="font-weight:600; color:#6a4bc7; font-size:1.08em;">Soporte personalizado</div>
+      <div style="font-size:0.98em; color:#555;">Para cada cliente</div>
+    </div>
+  </div>
+  <div class="info-card gsap_info-card" style="background: rgba(255,255,255,0.7); border-radius: 18px; box-shadow: 0 4px 24px #a18cd122; padding: 1.3rem 2.1rem; min-width: 220px; display: flex; align-items: center; gap: 1.1rem; border: 1.5px solid #e0d7f3;">
+    <span style="font-size:2em; color:#6a4bc7;">🚀</span>
+    <div>
+      <div style="font-weight:600; color:#6a4bc7; font-size:1.08em;">Entrega rápida</div>
+      <div style="font-size:0.98em; color:#555;">Acompañamiento hasta la activación</div>
+    </div>
+  </div>
+</div>
 </section>
 
     <!-- SECCIÓN QUIERO MI BOT -->
-    <section id="quieroBot" style="padding: 3rem; text-align: center; background: #f8f9fa;">
-      <h2>Crea tu propio Bot de WhatsApp</h2>
-      <div style="display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; align-items: flex-start; margin-top: 2rem;">
-        <!-- Formulario -->
-        <form id="botRequestForm" style="max-width: 500px; width: 100%; text-align: left; background: white; padding: 1.5rem; border-radius: 10px; box-shadow: 0 3px 10px rgba(0,0,0,0.05);">
-            <div style="margin-bottom: 1rem;">
-                <label for="empresaBot">Nombre de tu Empresa</label>
-                <input type="text" id="empresaBot" name="empresaBot" required style="width: 100%; padding: 0.5rem;">
-            </div>
-
-            <div style="margin-bottom: 1rem;">
-                <label for="contactoBot">Teléfono de Contacto</label>
-                <input type="tel" id="contactoBot" name="contactoBot" required style="width: 100%; padding: 0.5rem;">
-            </div>
-
-            <div style="margin-bottom: 1rem;">
-                <label for="infoCliente">¿Qué datos debe pedir tu bot a los clientes?</label>
-                <textarea id="infoCliente" name="infoCliente" rows="4" required style="width: 100%; padding: 0.5rem;"></textarea>
-            </div>
-
-            <div style="margin-bottom: 1rem;">
-                <label for="observacionesBot">Observaciones adicionales</label>
-                <textarea id="observacionesBot" name="observacionesBot" rows="3" style="width: 100%; padding: 0.5rem;"></textarea>
-            </div>
-
-            <div style="margin-bottom: 1rem;">
-<label for="captchaBotInput" id="captchaBotLabel"></label>
-  <input type="text" id="captchaBotInput" name="captchaBot" required style="width: 100%; padding: 0.5rem;">
-</div>
-
-            <button type="submit" style="background: #25D366; color: white; padding: 0.7rem 1.5rem; border: none; border-radius: 5px; width: 100%;">Enviar solicitud</button>
-            <div id="botFormMessage" style="margin-top: 1rem; color: green;"></div>
-        </form>
-
-        <!-- Texto informativo -->
-        <div style="max-width: 400px; text-align: left; color: #555; font-size: 0.95rem; line-height: 1.5;">
-            <p>
-                Para comenzar con la creación de su bot, se requerirá un pago anticipado del 50% del importe total mediante <strong>Bizum</strong> o <strong>transferencia bancaria</strong>.
-            </p>
-            <p>
-                Una vez recibido este formulario, me pondré en contacto con usted para confirmar todos los datos y definir el flujo final de su bot.
-            </p>
-            <p>
-                Tras completar la configuración, le informaré por <strong>email o teléfono</strong> para asistirle en la activación y puesta en marcha.
-            </p>
-            <p>
-                El acceso al bot se realizará a través de un <strong>subdominio personalizado</strong> en la web del bot, cuyo login será comunicado directamente por mí.
-            </p>
+    <section id="quieroBot" class="gsap-section" style="padding: 3rem 0; background: #f8f9fa; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <h2 style="color: #6a4bc7; margin-bottom: 2.2rem; font-size: 2.1rem; letter-spacing: 0.5px;">Crea tu propio Bot de WhatsApp</h2>
+      <button id="showBotModalBtn2" class="modern-btn" style="margin-bottom:2.5rem;">Solicita tu bot ahora</button>
+      <div style="display: flex; flex-direction: row; align-items: flex-start; justify-content: center; gap: 2.5rem; width: 100%; max-width: 1100px; margin: 0 auto; flex-wrap: wrap;">
+        <!-- Columna izquierda: Beneficios -->
+        <div class="info-box card gsap-card" style="max-width: 480px; min-width: 300px; flex: 1 1 340px; color: #444; font-size: 1.13rem; line-height: 1.7; background: rgba(255,255,255,0.65); border-radius: 22px; box-shadow: 0 8px 32px 0 rgba(161,140,209,0.13), 0 1.5px 6px 0 rgba(0,0,0,0.03); border: 1.5px solid #e0d7f3; padding: 2.2rem 2rem 2rem 2rem; backdrop-filter: blur(14px); display: flex; flex-direction: column; gap: 0.7rem;">
+          <h3 style="color:#6a4bc7; font-size:1.25em; margin-bottom:0.7em; font-weight: 700; letter-spacing: 0.2px; text-align:center;">¿Por qué tu negocio necesita un Bot de WhatsApp?</h3>
+          <ul style="padding-left: 1.2em; margin-bottom: 1.2em;">
+            <li><strong>Responde automáticamente a tus clientes 24/7</strong> sin perder oportunidades de venta.</li>
+            <li><strong>Gestiona reservas y citas</strong> de forma automática y sin llamadas.</li>
+            <li><strong>Envía recordatorios y confirmaciones</strong> para reducir ausencias y olvidos.</li>
+            <li><strong>Recoge pedidos o consultas</strong> de manera instantánea y organizada.</li>
+            <li><strong>Atiende a varios clientes a la vez</strong> sin saturar tu WhatsApp personal.</li>
+            <li><strong>Mejora la imagen profesional</strong> de tu empresa con respuestas rápidas y personalizadas.</li>
+            <li><strong>Reduce el tiempo en tareas repetitivas</strong> y dedícalo a lo que realmente importa.</li>
+            <li><strong>Facilita la captación de nuevos clientes</strong> con atención inmediata y automatizada.</li>
+          </ul>
+        </div>
+        <!-- Columna derecha: Casos de uso -->
+        <div class="info-box card gsap-card" style="max-width: 520px; min-width: 300px; flex: 1 1 340px; color: #444; font-size: 1.13rem; line-height: 1.7; background: rgba(255,255,255,0.65); border-radius: 22px; box-shadow: 0 8px 32px 0 rgba(161,140,209,0.13), 0 1.5px 6px 0 rgba(0,0,0,0.03); border: 1.5px solid #e0d7f3; padding: 2.2rem 2rem 2rem 2rem; backdrop-filter: blur(14px); display: flex; flex-direction: column; gap: 0.7rem;">
+          <h4 style="color:#a18cd1; margin-bottom:0.5em; font-size: 1.13em; font-weight: 700; text-align:center;">Casos de uso reales:</h4>
+          <ul style="padding-left: 1.2em;">
+            <li>📅 <b>Salones de belleza y peluquerías:</b> Reserva de citas y recordatorios automáticos.</li>
+            <li>🦷 <b>Clínicas dentales y de salud:</b> Confirmación y gestión de turnos.</li>
+            <li>🚗 <b>Talleres mecánicos:</b> Solicitud de cita para revisiones o reparaciones.</li>
+            <li>🏋️ <b>Gimnasios y entrenadores:</b> Organización de clases y consultas rápidas.</li>
+            <li>🍽️ <b>Restaurantes y cafeterías:</b> Reservas de mesa y pedidos para llevar.</li>
+            <li>🏠 <b>Inmobiliarias:</b> Coordinación de visitas y atención a interesados.</li>
+            <li>🛍️ <b>Tiendas y comercios:</b> Atención a consultas, pedidos y seguimiento de envíos.</li>
+            <li>💼 <b>Servicios profesionales:</b> Abogados, asesores, psicólogos, etc. para agendar consultas.</li>
+            <li>📚 <b>Academias y profesores particulares:</b> Gestión de inscripciones y recordatorios de clases.</li>
+            <li>🚚 <b>Servicios de delivery local:</b> Recepción y confirmación de pedidos automáticamente.</li>
+            <li>🏨 <b>Pequeños hoteles y alojamientos:</b> Reservas y atención a huéspedes sin llamadas.</li>
+            <li>🧹 <b>Servicios de limpieza:</b> Coordinación de citas y seguimiento de clientes.</li>
+            <li>🧑‍🔧 <b>Fontaneros y electricistas:</b> Solicitud de servicios y confirmación de visitas.</li>
+            <li>📈 <b>Negocios saturados:</b> Si tu negocio recibe muchas llamadas o mensajes y te cuesta gestionarlos, el bot automatiza la agenda y evita perder clientes por falta de respuesta. WhatsApp es la app que todos usan: moderniza tu atención y ahorra tiempo.</li>
+            <li>⏳ <b>Negocios que pierden clientes:</b> ¿Has perdido ventas por no contestar a tiempo? El bot responde al instante, incluso fuera de horario, y no deja escapar oportunidades.</li>
+          </ul>
+          <p style="margin-top:1.2em; color:#6a4bc7; font-weight:600; font-size: 1.08em; text-align:center;">¡Haz crecer tu negocio y ahorra tiempo automatizando tu WhatsApp hoy mismo!</p>
         </div>
       </div>
     </section>
 
-    <script src="login.js"></script>
-    <footer style="background: #f8f9fa; padding: 1rem; text-align: center; font-size: 0.9rem; color: #555;">
-    Hecho por <a href="https://www.linkedin.com/in/samueldeniz" target="_blank" style="color: #25D366; text-decoration: none; font-weight: bold;">Samuel Déniz</a>
+    <!-- MODAL INFO LEGAL -->
+    <div id="infoLegalModal" class="modal-overlay" style="display:none; z-index:3002;">
+      <div class="modal" style="max-width: 420px; background:rgba(30,30,30,0.98); color:#fff;">
+        <button class="modal-close" id="closeInfoLegalModal" style="color:#fff;">×</button>
+        <h3 style="color:#fbc2eb; text-align:center; margin-bottom:1.1em;">Aviso Legal</h3>
+        <div style="font-size:1.01em; color:#eee; opacity:0.92; line-height:1.7;">
+          <p><b>Esta web NO está afiliada, asociada ni respaldada por WhatsApp Inc. ni Meta Platforms.</b></p>
+          <p>Este servicio es desarrollado y gestionado de forma independiente por un profesional autónomo residente en España. No represento a WhatsApp ni tengo relación comercial con dicha empresa.</p>
+          <p>El uso de la palabra "WhatsApp" es meramente descriptivo para indicar la integración técnica del bot con la plataforma de mensajería.</p>
+          <p>Para cualquier consulta legal, transparencia o ejercicio de derechos, puedes contactar directamente conmigo a través del formulario de soporte.</p>
+          <p style="font-size:0.97em; color:#fbc2eb; margin-top:1.2em;">Este proyecto es personal y cumple la normativa española y europea de protección de datos y derechos de autor.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOT REQUEST MODAL -->
+    <div id="botModal" class="modal-overlay" style="display:none; z-index:3002;">
+      <div class="modal" style="max-width: 440px;">
+        <button class="modal-close" id="closeBotModal">×</button>
+        <h3 style="color:#6a4bc7; text-align:center; margin-bottom:1.1em;">Solicita tu Bot de WhatsApp</h3>
+        <form id="botRequestForm" class="modern-form">
+          <div class="input-group">
+            <input type="text" id="botName" name="botName" required placeholder=" " />
+            <label for="botName">Nombre de tu negocio</label>
+          </div>
+          <div class="input-group">
+            <input type="tel" id="botPhone" name="botPhone" required placeholder=" " pattern="[0-9]{9,}" />
+            <label for="botPhone">Teléfono de contacto</label>
+          </div>
+          <div class="input-group">
+            <input type="email" id="botEmail" name="botEmail" required placeholder=" " />
+            <label for="botEmail">Email</label>
+          </div>
+          <div class="input-group">
+            <textarea id="botDetails" name="botDetails" rows="3" placeholder=" "></textarea>
+            <label for="botDetails">¿Qué necesitas automatizar?</label>
+          </div>
+          <button type="submit">Enviar solicitud</button>
+        </form>
+      </div>
+    </div>
+
+    <footer style="background: rgba(161,140,209,0.10); padding: 1rem; text-align: center; font-size: 0.9rem; color: #6a4bc7; border-top: 1px solid #e0d7f3; letter-spacing: 0.2px;">
+    Hecho por <a href="https://www.linkedin.com/in/samueldeniz" target="_blank" style="color: #6a4bc7; text-decoration: none; font-weight: bold;">Samuel Déniz</a>
 </footer>
 </body>
 </html>

@@ -133,7 +133,233 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // MODAL LOGIC para login, bot request y legal info
+    function setupModals() {
+        // Login modal
+        const loginModal = document.getElementById('loginModal');
+        const showLoginBtn = document.getElementById('showLoginBtn');
+        const closeLoginModal = document.getElementById('closeLoginModal');
+        if (showLoginBtn && loginModal && closeLoginModal) {
+            showLoginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                loginModal.style.display = 'flex';
+            });
+            closeLoginModal.addEventListener('click', () => {
+                loginModal.style.display = 'none';
+            });
+            loginModal.addEventListener('click', (e) => {
+                if (e.target === loginModal) loginModal.style.display = 'none';
+            });
+        }
+
+        // Bot request modal
+        const botModal = document.getElementById('botModal');
+        const closeBotModal = document.getElementById('closeBotModal');
+        const showBotModalBtns = document.querySelectorAll('#showBotModalBtn, #showBotModalBtn2, #showBotModalBtn3');
+        showBotModalBtns.forEach(btn => {
+            if (btn && botModal) {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    botModal.style.display = 'flex';
+                });
+            }
+        });
+        if (closeBotModal && botModal) {
+            closeBotModal.addEventListener('click', () => {
+                botModal.style.display = 'none';
+            });
+            botModal.addEventListener('click', (e) => {
+                if (e.target === botModal) botModal.style.display = 'none';
+            });
+        }
+
+        // Info legal modal
+        const infoBtn = document.getElementById('infoLegalBtn');
+        const infoModal = document.getElementById('infoLegalModal');
+        const closeInfo = document.getElementById('closeInfoLegalModal');
+        if (infoBtn && infoModal && closeInfo) {
+            infoBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                infoModal.style.display = 'flex';
+            });
+            closeInfo.addEventListener('click', () => {
+                infoModal.style.display = 'none';
+            });
+            infoModal.addEventListener('click', (e) => {
+                if (e.target === infoModal) infoModal.style.display = 'none';
+            });
+        }
+    }
+
+    // GSAP Animations
+    const initGSAPAnimations = () => {
+        // Verificar si GSAP está disponible
+        if (typeof gsap === 'undefined') {
+            console.error('GSAP no está cargado. Verifica la inclusión del script en el HTML.');
+            return;
+        }
+        console.log('GSAP está cargado correctamente.');
+
+        // Animación inicial del formulario de login
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            console.log('Ejecutando animación para el formulario de login.');
+            gsap.from(loginForm, {
+                opacity: 0,
+                y: -20,
+                duration: 1,
+                ease: 'power2.out'
+            });
+        } else {
+            console.warn('No se encontró el formulario de login.');
+        }
+
+        // Animación para la barra de navegación
+        const navBar = document.querySelector('nav');
+        if (navBar) {
+            console.log('Ejecutando animación para la barra de navegación.');
+            gsap.from(navBar, {
+                opacity: 0,
+                y: -50,
+                duration: 1.2,
+                ease: 'power2.out',
+                delay: 0.5
+            });
+        } else {
+            console.warn('No se encontró la barra de navegación.');
+        }
+
+        // Animación para las secciones
+        const sections = document.querySelectorAll('section');
+        if (sections.length > 0) {
+            console.log('Ejecutando animación para las secciones.');
+            sections.forEach((section, index) => {
+                gsap.from(section, {
+                    opacity: 0,
+                    y: 30,
+                    duration: 1,
+                    ease: 'power2.out',
+                    delay: 1 + index * 0.3
+                });
+
+                // Animación adicional para los títulos dentro de cada sección
+                const title = section.querySelector('h1');
+                if (title) {
+                    gsap.from(title, {
+                        opacity: 0,
+                        x: -50,
+                        duration: 1,
+                        ease: 'power2.out',
+                        delay: 1.2 + index * 0.3
+                    });
+                }
+
+                // Animación adicional para los párrafos dentro de cada sección
+                const paragraphs = section.querySelectorAll('p');
+                if (paragraphs.length > 0) {
+                    gsap.from(paragraphs, {
+                        opacity: 0,
+                        x: 50,
+                        duration: 1,
+                        ease: 'power2.out',
+                        stagger: 0.2,
+                        delay: 1.4 + index * 0.3
+                    });
+                }
+            });
+        } else {
+            console.warn('No se encontraron secciones en la página.');
+        }
+
+        // Animación específica para "Plan a tu medida"
+        const planSection = document.querySelector('#planSection');
+        if (planSection) {
+            gsap.from(planSection, {
+                opacity: 0,
+                scale: 0.8,
+                duration: 1.5,
+                ease: 'elastic.out(1, 0.3)',
+                delay: 2
+            });
+        }
+
+        // Animación específica para "Cómo funciona este bot"
+        const botFunctionSection = document.querySelector('#botFunctionSection');
+        if (botFunctionSection) {
+            gsap.from(botFunctionSection, {
+                opacity: 0,
+                rotationX: 90,
+                duration: 1.5,
+                ease: 'back.out(1.7)',
+                delay: 2.5
+            });
+        }
+
+        // Animación específica para "WhatsApp Bot Para empresas"
+        const whatsappBotSection = document.querySelector('#whatsappBotSection');
+        if (whatsappBotSection) {
+            gsap.from(whatsappBotSection, {
+                opacity: 0,
+                y: 100,
+                duration: 1.5,
+                ease: 'power4.out',
+                delay: 3
+            });
+        }
+
+        // Animación para "Casos de uso reales"
+        const realUseCasesTexts = document.querySelectorAll('.info-box.card.gsap-card ul li');
+        realUseCasesTexts.forEach((text) => {
+            text.addEventListener('mouseenter', () => {
+                gsap.to(text, {
+                    x: 10,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+            text.addEventListener('mouseleave', () => {
+                gsap.to(text, {
+                    x: 0,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+        });
+
+        // Animación de vibración para "Pago seguro", "Soporte personalizado", "Entrega rápida"
+        const vibratingElements = document.querySelectorAll('#securePayment, #personalizedSupport, #fastDelivery');
+        vibratingElements.forEach((element) => {
+            gsap.to(element, {
+                x: -2,
+                y: 2,
+                repeat: -1,
+                yoyo: true,
+                duration: 0.1,
+                ease: 'power1.inOut'
+            });
+        });
+
+        // Animación de vibración para "Pack Profesional" y "Mantenimiento"
+        const packElements = document.querySelectorAll('#professionalPack, #maintenance');
+        packElements.forEach((element) => {
+            gsap.to(element, {
+                x: -2,
+                y: 2,
+                repeat: -1,
+                yoyo: true,
+                duration: 0.1,
+                ease: 'power1.inOut'
+            });
+        });
+    };
+
     // Inicializar todo
     initDarkMode();
     initCaptchaSystem();
+    setupModals();
+    initGSAPAnimations();
 });
+
+// ===== GSAP ANIMACIONES MODERNAS LOGIN =====
+// Unifica en un solo DOMContentLoaded para evitar conflictos y doble ejecución
+// Elimina el segundo bloque para evitar doble inicialización y errores de carga
