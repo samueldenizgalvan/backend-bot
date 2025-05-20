@@ -576,7 +576,7 @@
       <div class="modal" style="max-width: 440px;">
         <button class="modal-close" id="closeBotModal">×</button>
         <h3 style="color:#6a4bc7; text-align:center; margin-bottom:1.1em;">Solicita tu Bot de <img src="./whatsapp-icon.png" alt="WhatsApp" style="width: 24px; vertical-align: middle;"></h3>
-        <form id="botRequestForm" class="modern-form">
+        <form id="botRequestForm" class="modern-form" action="/api/bot-request" method="POST">
           <div class="input-group">
             <input type="text" id="botName" name="botName" required placeholder=" " />
             <label for="botName">Nombre de tu negocio</label>
