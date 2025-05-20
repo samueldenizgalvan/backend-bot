@@ -19,8 +19,13 @@ router.post('/soporte', async (req, res) => {
     await mailer.sendMail({
       from: '"Soporte Bot" <administrador@bot-whatsapp.es>',
       to: 'samueldenizgalvan@gmail.com',
-      subject: `Soporte: ${req.body.nombre}`,
-      text: `\nNombre: ${req.body.nombre}\nEmpresa: ${req.body.empresa}\nTeléfono: ${req.body.telefono}\nDescripción: ${req.body.descripcion}\n  `
+      subject: `Soporte: ${req.body.botName}`,
+      text: `
+Nombre: ${req.body.botName}
+Empresa: ${req.body.botPhone}
+Teléfono: ${req.body.botEmail}
+Descripción: ${req.body.botDetails}
+  `
     });
     res.json({ success: true });
   } catch (err) {
@@ -34,8 +39,13 @@ router.post('/bot-request', async (req, res) => {
     await mailer.sendMail({
       from: '"Soporte Bot" <administrador@bot-whatsapp.es>',
       to: 'samueldenizgalvan@gmail.com',
-      subject: `Solicitud Bot: ${req.body.empresaBot}`,
-      text: `\nEmpresa: ${req.body.empresaBot}\nContacto: ${req.body.contactoBot}\nDatos a pedir: ${req.body.infoCliente}\nObservaciones: ${req.body.observacionesBot || ''}\n  `
+      subject: `Solicitud Bot: ${req.body.botName}`,
+      text: `
+Empresa: ${req.body.botName}
+Contacto: ${req.body.botPhone}
+Datos a pedir: ${req.body.botEmail}
+Observaciones: ${req.body.botDetails || ''}
+  `
     });
     res.json({ success: true });
   } catch (err) {
