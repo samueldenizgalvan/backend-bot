@@ -31,8 +31,12 @@ app.use(session({
   cookie: { secure: false, httpOnly: true, maxAge: 24 * 60 * 60 * 1000 }
 }));
 
-// 1) Sirve estáticos
-app.use(express.static(path.join(__dirname, 'public')));
+// 1) Sirve estáticos SIN fichero index por defecto
+app.use(express.static(
+  path.join(__dirname, 'public'),
+  { index: false }
+));
+
 
 // 2) Ruta raíz con control de sesión
 app.get('/', (req, res) => {
@@ -92,6 +96,6 @@ cron.schedule('0 8 * * *', () => {
 // Arranca el servidor
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`🚀 Servidor listo en http://localhost:${PORT}`);
+  console.log('Servidor listo en http://localhost:' + PORT);
   cargarCitas();
 });
