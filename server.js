@@ -9,6 +9,7 @@ const cron = require('node-cron');
 const { protegerRuta } = require('./middleware/authMiddleware');
 const authRoutes = require('./routes/authRoutes');
 const citasRoutes = require('./routes/citasRoutes');
+const botRequestRoutes = require('./routes/soporteRoutes');
 const { cargarCitas, verificarRecordatorios } = require('./services/citasService');
 const botService = require('./services/botService');
 const { manejarMensaje, getUserFlowFields } = require('./services/userFlowService');
@@ -71,6 +72,7 @@ app.get('/admin.html', protegerRuta, (req, res) =>
 // APIs
 app.use('/api', authRoutes);
 app.use('/api', citasRoutes);
+app.use('/api', botRequestRoutes);
 app.get('/api/flujo-usuario', (req, res) =>
   res.json(getUserFlowFields())
 );
