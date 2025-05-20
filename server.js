@@ -33,6 +33,24 @@ app.use(session({
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Sirve los archivos estáticos de /public
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Ruta raíz: redirige según sesión y rol
+app.get('/', (req, res) => {
+  if (!req.session.usuario) {
+    // No autenticado → mostramos login
+    return res.sendFile(path.join(__dirname, 'public', 'login.html'));
+  }
+  // Autenticado → mostramos panel según rol
+  if (req.session.usuario === 'admin') {
+    return res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+  }
+  // Cualquier otro usuario (cliente)
+  return res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+
 // Inicializar almacenamiento en memoria para citas
 const citasPendientes = new Map();
 const citasConfirmadas = new Map();
@@ -40,7 +58,6 @@ app.set('citasPendientes', citasPendientes);
 app.set('citasConfirmadas', citasConfirmadas);
 
 // Routes
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
 app.post('/login', (req, res) => {
     const { usuario, contraseña } = req.body;
     if (usuario === 'admin' && contraseña === 'admin123') {
