@@ -14,7 +14,7 @@ const { cargarCitas, verificarRecordatorios } = require('./services/citasService
 const botService = require('./services/botService');
 const { manejarMensaje, getUserFlowFields } = require('./services/userFlowService');
 
-// Inicialización
+// Inicialización dawdawdawdawdawd
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
