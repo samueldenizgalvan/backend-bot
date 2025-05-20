@@ -80,13 +80,27 @@ app.get('/api/flujo-usuario', (req, res) => {
 });
 
 // WebSocket
+// WebSocket
 io.on('connection', socket => {
     socket.emit('log', '🟢 Cliente conectado a WebSocket');
-    socket.on('startBot', botService.iniciarBot);
-    socket.on('stopBot', botService.stopBot);
-    socket.on('conectarSesion', botService.crearNuevoCliente);
-    socket.on('message', msg => manejarMensaje(msg, botService.client, io));
+
+    socket.on('startBot', () => {
+        botService.iniciarBot();
+    });
+
+    socket.on('stopBot', () => {
+        botService.stopBot();
+    });
+
+    socket.on('conectarSesion', () => {
+        botService.crearNuevoCliente();
+    });
+
+    socket.on('message', msg => {
+        manejarMensaje(msg, botService.client, io);
+    });
 });
+
 
 // Cron Jobs
 cron.schedule('0 8 * * *', () => {
