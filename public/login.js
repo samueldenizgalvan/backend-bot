@@ -49,32 +49,35 @@ document.addEventListener('DOMContentLoaded', () => {
                         botEmail: document.getElementById('botEmail')?.value,
                         botDetails: document.getElementById('botDetails')?.value // Captura correctamente el campo de detalles
                     };
-                    fetch('/api/send-email', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            to: 'administrador@bot-whatsapp.es',
-                            subject: 'Nueva solicitud de Bot de WhatsApp',
-                            text: `Nombre: ${payload.botName}\nTeléfono: ${payload.botPhone}\nEmail: ${payload.botEmail}\nDetalles: ${payload.botDetails}`
-                        })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Solicitud enviada correctamente.');
-                            form.reset();
-                        } else {
-                            alert('Error al enviar la solicitud.');
-                        }
-                    })
-                    .catch(() => alert('Error de red al enviar la solicitud.'));
-                }
-                // Regenerar captcha después del envío
-                currentAnswer = generateCaptcha(label);
-                if (input) input.value = '';
-            });
-        });
-    };
+                    fetch('/api/bot-request', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    botName: payload.botName,
+    botPhone: payload.botPhone,
+    botEmail: payload.botEmail,
+    botDetails: payload.botDetails
+  })
+})
+.then(res => res.json())
+.then(data => {
+  if (data.success) {
+    alert('Solicitud enviada correctamente.');
+    form.reset();
+  } else {
+    alert('Error al enviar la solicitud.');
+  }
+})
+.catch((err) => {
+  console.error('Error en fetch:', err);
+  alert('Error de red al enviar la solicitud.');
+});
+               }
+    }); // Cierra form.addEventListener
+});     // Cierra captchaConfigs.forEach
+};      // Cierra initCaptchaSystem
+
+
 
     // ========= LOGIN FORM HANDLER ==========
     const loginForm = document.getElementById('loginForm');
@@ -448,7 +451,3 @@ document.addEventListener('DOMContentLoaded', () => {
     initGSAPAnimations();
     initInputAnimations();
 });
-
-// ===== GSAP ANIMACIONES MODERNAS LOGIN =====
-// Unifica en un solo DOMContentLoaded para evitar conflictos y doble ejecución
-// Elimina el segundo bloque para evitar doble inicialización y errores de carga
