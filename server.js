@@ -8,9 +8,8 @@ const bodyParser = require('body-parser');
 const cron = require('node-cron');
 const { protegerRuta } = require('./middleware/authMiddleware');
 const authRoutes = require('./routes/authRoutes');
-const citasRoutes = require('./routes/citasRoutes');
 const botRequestRoutes = require('./routes/botRequestRoutes');
-const { cargarCitas, verificarRecordatorios } = require('./services/citasService');
+const appointmentsRoutes = require('./routes/appointments.routes');
 const botService = require('./services/botService');
 const { manejarMensaje, getUserFlowFields } = require('./services/userFlowService');
 
@@ -71,7 +70,7 @@ app.get('/admin.html', protegerRuta, (req, res) =>
 
 // APIs
 app.use('/api', authRoutes);
-app.use('/api', citasRoutes);
+app.use('/api', appointmentsRoutes);
 app.use('/api', botRequestRoutes);
 app.get('/api/flujo-usuario', (req, res) =>
   res.json(getUserFlowFields())
@@ -87,15 +86,10 @@ io.on('connection', socket => {
   socket.on('message', msg => manejarMensaje(msg, botService.client, io));
 });
 
-// 4) Cron para recordatorios
-cron.schedule('0 8 * * *', () => {
-  console.log('⏰ Verificando citas para enviar recordatorios (08:00)');
-  verificarRecordatorios();
-});
+// 4) Cron para recordatorios (placeholder)
 
 // Arranca el servidor
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log('Servidor listo en http://localhost:' + PORT);
-  cargarCitas();
 });
