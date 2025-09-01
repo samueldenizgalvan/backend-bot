@@ -1,6 +1,7 @@
 // Servicio multiusuario para WhatsApp
 const { Client, LocalAuth } = require('whatsapp-web.js');
-const bots = new Map(); // username -> { client, estado }
+// username -> { client, status, lastQR }
+const bots = new Map();
 
 // Inicializa o recupera el bot para un usuario
 async function getOrCreateBot(username, io) {
@@ -9,15 +10,42 @@ async function getOrCreateBot(username, io) {
         authStrategy: new LocalAuth({ clientId: username }),
         puppeteer: { args: ['--no-sandbox', '--disable-setuid-sandbox'] }
     });
-    // Puedes agregar aquí eventos personalizados por usuario si lo deseas
+    bots.set(username, { client, status: 'initializing', lastQR: null });
+
+    client.on('qr', qr => {
+        const bot = bots.get(username);
+        if (bot) {
+            bot.lastQR = qr;
+            bot.status = 'qr';
+        }
+    });
+
     client.on('ready', () => {
+        const bot = bots.get(username);
+        if (bot) {
+            bot.status = 'ready';
+            bot.lastQR = null;
+        }
         if (io) io.emit('log', `✅ Bot de WhatsApp listo para ${username}`);
     });
+
+    client.on('authenticated', () => {
+        const bot = bots.get(username);
+        if (bot) bot.status = 'authenticated';
+    });
+
+    client.on('auth_failure', () => {
+        const bot = bots.get(username);
+        if (bot) bot.status = 'auth_failure';
+    });
+
     client.on('disconnected', () => {
+        const bot = bots.get(username);
+        if (bot) bot.status = 'disconnected';
         bots.delete(username);
     });
+
     await client.initialize();
-    bots.set(username, { client });
     return client;
 }
 
@@ -30,9 +58,9 @@ exports.sendConfirmation = async (username, telefono, fecha, hora) => {
 
 // Obtener bots activos
 exports.getBotsActivos = () => {
-    return Array.from(bots.entries()).map(([username, { client }]) => ({
+    return Array.from(bots.entries()).map(([username, { client, status }]) => ({
         username,
-        estado: client.info ? client.info.pushname || 'Activo' : 'Activo'
+        estado: status || (client.info ? client.info.pushname || 'Activo' : 'Activo')
     }));
 };
 
@@ -51,6 +79,15 @@ exports.stopBot = (username) => {
 exports.restartBot = async (username) => {
     exports.stopBot(username);
     await exports.startBot(username);
+};
+
+// Estado del bot
+exports.getStatus = (username) => {
+    const bot = bots.get(username);
+    if (!bot) {
+        return { status: 'disconnected', hasLastQR: false };
+    }
+    return { status: bot.status || 'unknown', hasLastQR: !!bot.lastQR };
 };
 
 // Puedes agregar más funciones multiusuario aquí
