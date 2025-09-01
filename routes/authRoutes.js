@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs');
+const { requireTenant } = require('../middleware/authMiddleware');
+const whatsappService = require('../services/whatsappService');
 
 // Login page
 router.get('/login', (req, res) => res.sendFile(path.join(__dirname, '../public', 'login.html')));
 
-// Check auth
-router.get('/check-auth', (req, res) => {
-  res.json({ authenticated: !!req.session.authenticated });
-});
+// Health check
+router.get('/health', (req, res) => res.json({ status: 'ok' }));
 
 // Función para verificar la contraseña usando users.json
 function passwordCorrecta(username, password) {
@@ -43,6 +43,14 @@ router.post('/login', (req, res) => {
     res.status(401).json({ success: false, message: 'Credenciales inválidas' });
 });
 
+// Requiere tenant para las rutas siguientes
+router.use(requireTenant);
+
+// Check auth
+router.get('/check-auth', (req, res) => {
+  res.json({ authenticated: !!req.session.authenticated });
+});
+
 // Logout
 router.post('/logout', (req, res) => {
   req.session.destroy(() => res.json({ success: true }));
@@ -50,9 +58,6 @@ router.post('/logout', (req, res) => {
 
 // Nueva ruta para obtener el flujo personalizado del usuario
 router.get('/api/flujo-usuario', (req, res) => {
-    if (!req.session || !req.session.user) {
-        return res.status(401).json({ success: false, message: 'No autenticado' });
-    }
     const username = req.session.user;
     const userFlowPath = path.join(__dirname, '../userflows', username + '.json');
     if (!fs.existsSync(userFlowPath)) {
@@ -65,6 +70,16 @@ router.get('/api/flujo-usuario', (req, res) => {
     } catch (e) {
         return res.status(500).json({ success: false, message: 'Error leyendo el flujo del usuario' });
     }
+});
+
+// Control de bot del usuario autenticado
+router.post('/bot/start', (req, res) => {
+    whatsappService.startBot && whatsappService.startBot(req.session.user);
+    res.json({ success: true });
+});
+router.post('/bot/stop', (req, res) => {
+    whatsappService.stopBot && whatsappService.stopBot(req.session.user);
+    res.json({ success: true });
 });
 
 // Ruta para que el admin guarde el flujo personalizado de un usuario
@@ -143,7 +158,6 @@ router.get('/api/citas/usuario/:username', (req, res) => {
 });
 
 // 2. Estado de bots activos (requiere whatsappService multiusuario)
-const whatsappService = require('../services/whatsappService');
 router.get('/api/bots-activos', (req, res) => {
     if (!req.session || req.session.role !== 'admin') {
         return res.status(403).json({ success: false, message: 'Solo el admin puede ver bots activos.' });
@@ -227,7 +241,6 @@ router.delete('/api/usuario/:username', (req, res) => {
         fs.unlinkSync(userFlowPath);
     }
     // 3. Eliminar sesión de bot (si existe)
-    const whatsappService = require('../services/whatsappService');
     if (whatsappService.stopBot) {
         whatsappService.stopBot(username);
     }
