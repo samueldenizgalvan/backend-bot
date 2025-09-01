@@ -1,57 +1,112 @@
-// Servicio multiusuario para WhatsApp
-const { Client, LocalAuth } = require('whatsapp-web.js');
-const bots = new Map(); // username -> { client, estado }
+// Servicio de WhatsApp multi-tenant
+// Gestiona múltiples clientes de WhatsApp identificados por tenantId
 
-// Inicializa o recupera el bot para un usuario
-async function getOrCreateBot(username, io) {
-    if (bots.has(username)) return bots.get(username).client;
+const { Client, LocalAuth } = require('whatsapp-web.js');
+
+// Pool de clientes: tenantId -> client
+const clients = new Map();
+// Estado reciente de cada cliente para consultas rápidas
+const states = new Map();
+
+// Crea y configura un cliente para el tenant indicado
+async function createClient(tenantId) {
     const client = new Client({
-        authStrategy: new LocalAuth({ clientId: username }),
-        puppeteer: { args: ['--no-sandbox', '--disable-setuid-sandbox'] }
+        authStrategy: new LocalAuth({ clientId: tenantId, dataPath: './sessions' }),
+        puppeteer: {
+            headless: true,
+            args: ['--no-sandbox', '--disable-gpu', '--disable-dev-shm-usage']
+        }
     });
-    // Puedes agregar aquí eventos personalizados por usuario si lo deseas
+
+    states.set(tenantId, 'INITIALIZING');
+
+    // Eventos básicos
+    client.on('qr', (qr) => {
+        console.log(`[${tenantId}] QR: ${qr}`);
+    });
+
     client.on('ready', () => {
-        if (io) io.emit('log', `✅ Bot de WhatsApp listo para ${username}`);
+        console.log(`[${tenantId}] READY`);
+        states.set(tenantId, 'READY');
     });
-    client.on('disconnected', () => {
-        bots.delete(username);
+
+    client.on('disconnected', (reason) => {
+        console.log(`[${tenantId}] DISCONNECTED: ${reason || ''}`);
+        states.set(tenantId, 'DISCONNECTED');
+        clients.delete(tenantId);
     });
+
+    client.on('auth_failure', (msg) => {
+        console.log(`[${tenantId}] AUTH FAILURE: ${msg}`);
+        states.set(tenantId, 'AUTH_FAILURE');
+    });
+
+    client.on('message', (msg) => {
+        console.log(`[${tenantId}] MESSAGE: ${msg.body}`);
+    });
+
     await client.initialize();
-    bots.set(username, { client });
     return client;
 }
 
-// Enviar confirmación de cita usando el bot del usuario
-exports.sendConfirmation = async (username, telefono, fecha, hora) => {
-    const client = await getOrCreateBot(username);
+// Inicia el bot para un tenant
+async function startBot(tenantId) {
+    if (clients.has(tenantId)) {
+        return clients.get(tenantId);
+    }
+    const client = await createClient(tenantId);
+    clients.set(tenantId, client);
+    return client;
+}
+
+// Detiene y elimina el bot del tenant
+function stopBot(tenantId) {
+    const client = clients.get(tenantId);
+    if (client) {
+        client.destroy();
+        clients.delete(tenantId);
+        states.set(tenantId, 'STOPPED');
+        console.log(`[${tenantId}] STOPPED`);
+    }
+}
+
+// Obtiene el estado del bot
+async function getStatus(tenantId) {
+    const client = clients.get(tenantId);
+    if (!client) {
+        return states.get(tenantId) || 'STOPPED';
+    }
+    try {
+        const state = await client.getState();
+        states.set(tenantId, state);
+        return state;
+    } catch (err) {
+        return states.get(tenantId) || 'UNKNOWN';
+    }
+}
+
+// Funciones auxiliares para compatibilidad con el código existente
+async function sendConfirmation(tenantId, telefono, fecha, hora) {
+    const client = await startBot(tenantId);
     const mensaje = `✅ Tu cita ha sido confirmada para el día ${fecha} a las ${hora}`;
     await client.sendMessage(telefono, mensaje);
-};
+}
 
-// Obtener bots activos
-exports.getBotsActivos = () => {
-    return Array.from(bots.entries()).map(([username, { client }]) => ({
-        username,
-        estado: client.info ? client.info.pushname || 'Activo' : 'Activo'
-    }));
-};
+function getBotsActivos() {
+    return Array.from(states.entries()).map(([tenantId, estado]) => ({ tenantId, estado }));
+}
 
-// Control de bots
-exports.startBot = async (username) => {
-    if (!bots.has(username)) {
-        await getOrCreateBot(username);
-    }
-};
-exports.stopBot = (username) => {
-    if (bots.has(username)) {
-        bots.get(username).client.destroy();
-        bots.delete(username);
-    }
-};
-exports.restartBot = async (username) => {
-    exports.stopBot(username);
-    await exports.startBot(username);
-};
+async function restartBot(tenantId) {
+    stopBot(tenantId);
+    await startBot(tenantId);
+}
 
-// Puedes agregar más funciones multiusuario aquí
+module.exports = {
+    startBot,
+    stopBot,
+    getStatus,
+    sendConfirmation,
+    getBotsActivos,
+    restartBot
+};
 
