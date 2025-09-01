@@ -2,6 +2,8 @@ node_modules/
 .wwebjs_auth/
 .env
 citas.json
+data/
+sessions/
 *.log
 .DS_Store
 npm-debug.log*
