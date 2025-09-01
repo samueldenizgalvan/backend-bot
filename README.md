@@ -22,8 +22,21 @@ Este es el backend Node.js para gestionar bots de WhatsApp multiusuario y la API
 3. Configura tu entorno si usas `.env` (opcional).
 4. Ejecuta el servidor:
    ```sh
-   node server.js
+   npm run start:api
    ```
+
+## Uso con PM2
+Lanza la API y los bots como procesos administrados por [PM2](https://pm2.keymetrics.io/):
+
+- Inicia la API:
+  ```sh
+  npm run pm2:api
+  ```
+
+- Inicia un bot para un tenant específico (reemplaza `123` por tu TENANT_ID):
+  ```sh
+  TENANT_ID=123 npm run pm2:bot
+  ```
 
 ## Notas
 - No subas `node_modules`, `.wwebjs_auth`, `.env` ni archivos de sesión a GitHub.
