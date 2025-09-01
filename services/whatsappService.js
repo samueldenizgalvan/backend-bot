@@ -1,6 +1,6 @@
 // Servicio multiusuario para WhatsApp
 const { Client, LocalAuth } = require('whatsapp-web.js');
-const bots = new Map(); // username -> { client, estado }
+const bots = new Map(); // username -> { client, status, lastQR }
 
 // Inicializa o recupera el bot para un usuario
 async function getOrCreateBot(username, io) {
@@ -9,15 +9,24 @@ async function getOrCreateBot(username, io) {
         authStrategy: new LocalAuth({ clientId: username }),
         puppeteer: { args: ['--no-sandbox', '--disable-setuid-sandbox'] }
     });
-    // Puedes agregar aquí eventos personalizados por usuario si lo deseas
+    const botData = { client, status: 'starting', lastQR: null };
+
+    client.on('qr', qr => {
+        botData.lastQR = qr;
+        botData.status = 'qr';
+        if (io) io.emit('qr', qr);
+    });
+
     client.on('ready', () => {
+        botData.status = 'ready';
+        botData.lastQR = null;
         if (io) io.emit('log', `✅ Bot de WhatsApp listo para ${username}`);
     });
     client.on('disconnected', () => {
         bots.delete(username);
     });
     await client.initialize();
-    bots.set(username, { client });
+    bots.set(username, botData);
     return client;
 }
 
@@ -41,6 +50,7 @@ exports.startBot = async (username) => {
     if (!bots.has(username)) {
         await getOrCreateBot(username);
     }
+    return exports.getStatus(username);
 };
 exports.stopBot = (username) => {
     if (bots.has(username)) {
@@ -51,6 +61,14 @@ exports.stopBot = (username) => {
 exports.restartBot = async (username) => {
     exports.stopBot(username);
     await exports.startBot(username);
+};
+
+exports.getStatus = (username) => {
+    if (!bots.has(username)) {
+        return { status: 'stopped', hasQR: false };
+    }
+    const bot = bots.get(username);
+    return { status: bot.status || 'starting', hasQR: !!bot.lastQR };
 };
 
 // Puedes agregar más funciones multiusuario aquí
