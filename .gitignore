@@ -5,3 +5,9 @@ citas.json
 *.log
 .DS_Store
 npm-debug.log*
+data/*
+sessions/*
+logs/*
+!data/.gitkeep
+!sessions/.gitkeep
+!logs/.gitkeep
