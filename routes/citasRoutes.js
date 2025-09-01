@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const citasController = require('../controllers/citasController');
+const { requireTenant } = require('../middleware/requireTenant');
+
+// Todas las rutas de citas requieren tenant
+router.use(requireTenant);
 
 // Citas pendientes
 router.get('/citas/pendientes', citasController.getPendientes);

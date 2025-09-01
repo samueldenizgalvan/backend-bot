@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs');
+const { requireTenant } = require('../middleware/requireTenant');
 
 // Login page
 router.get('/login', (req, res) => res.sendFile(path.join(__dirname, '../public', 'login.html')));
@@ -47,6 +48,9 @@ router.post('/login', (req, res) => {
 router.post('/logout', (req, res) => {
   req.session.destroy(() => res.json({ success: true }));
 });
+
+// Rutas posteriores requieren identificador de tenant
+router.use(requireTenant);
 
 // Nueva ruta para obtener el flujo personalizado del usuario
 router.get('/api/flujo-usuario', (req, res) => {

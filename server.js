@@ -7,6 +7,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const cron = require('node-cron');
 const { protegerRuta } = require('./middleware/authMiddleware');
+const { requireTenant } = require('./middleware/requireTenant');
 const authRoutes = require('./routes/authRoutes');
 const citasRoutes = require('./routes/citasRoutes');
 const botRequestRoutes = require('./routes/botRequestRoutes');
@@ -73,7 +74,7 @@ app.get('/admin.html', protegerRuta, (req, res) =>
 app.use('/api', authRoutes);
 app.use('/api', citasRoutes);
 app.use('/api', botRequestRoutes);
-app.get('/api/flujo-usuario', (req, res) =>
+app.get('/api/flujo-usuario', requireTenant, (req, res) =>
   res.json(getUserFlowFields())
 );
 
