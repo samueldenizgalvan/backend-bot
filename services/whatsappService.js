@@ -1,5 +1,6 @@
 // Servicio multiusuario para WhatsApp
 const { Client, LocalAuth } = require('whatsapp-web.js');
+const storage = require('../storage');
 const bots = new Map(); // username -> { client, estado }
 
 // Inicializa o recupera el bot para un usuario
@@ -15,6 +16,14 @@ async function getOrCreateBot(username, io) {
     });
     client.on('disconnected', () => {
         bots.delete(username);
+    });
+    client.on('message', (message) => {
+        const log = {
+            ts: Date.now(),
+            from: message.from,
+            body: message.body
+        };
+        storage.appendMessage(username, log);
     });
     await client.initialize();
     bots.set(username, { client });
