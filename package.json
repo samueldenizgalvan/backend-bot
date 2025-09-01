@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:api": "node server.js",
+    "pm2:api": "pm2 start server.js --name api && pm2 save",
+    "pm2:bot": "TENANT_ID=$TENANT_ID pm2 start services/bot.js --name bot-$TENANT_ID --update-env && pm2 save"
   },
   "keywords": [],
   "author": "",
