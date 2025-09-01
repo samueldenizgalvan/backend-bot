@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
+const { requireTenant } = require('../middleware/requireTenant');
+
+router.use(requireTenant);
 
 // Configuración de mailer (ajusta según tu config real)
 const mailer = nodemailer.createTransport({
