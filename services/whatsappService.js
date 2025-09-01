@@ -1,5 +1,7 @@
 // Servicio multiusuario para WhatsApp
 const { Client, LocalAuth } = require('whatsapp-web.js');
+const fs = require('fs');
+const path = require('path');
 const bots = new Map(); // username -> { client, estado }
 
 // Inicializa o recupera el bot para un usuario
@@ -15,6 +17,22 @@ async function getOrCreateBot(username, io) {
     });
     client.on('disconnected', () => {
         bots.delete(username);
+    });
+    client.on('message', (msg) => {
+        const logDir = path.join(__dirname, '..', 'logs', username);
+        const logPath = path.join(logDir, 'messages.ndjson');
+        const entry = {
+            ts: Date.now(),
+            from: msg.from,
+            to: msg.to,
+            body: msg.body
+        };
+        try {
+            fs.mkdirSync(logDir, { recursive: true });
+            fs.appendFile(logPath, JSON.stringify(entry) + '\n', () => {});
+        } catch (err) {
+            console.error('Error registrando mensaje:', err);
+        }
     });
     await client.initialize();
     bots.set(username, { client });
