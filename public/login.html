@@ -302,6 +302,13 @@
       justify-content: center;
       animation: fadeIn 0.3s;
     }
+    #loginModal {
+      justify-content: flex-end;
+      padding-right: 2rem;
+    }
+    #loginModal .modal {
+      max-width: 320px;
+    }
     @keyframes fadeIn {
       from { opacity: 0; } to { opacity: 1; }
     }
@@ -502,7 +509,8 @@
           <a href="#funciona">Cómo funciona</a>
           <a href="#precios">Precios</a>
           <a href="#quieroBot">Quiero mi bot</a>
-          <a href="#info" id="showInfoLegalBtn">más información</a>
+          <a href="#info" id="showInfoLegalBtn">Mas informacion</a>
+          <a href="#privacidad">Política de privacidad</a>
         </div>
       </nav>
 
@@ -526,19 +534,6 @@
         </form>
       </div>
     </div>
-
-    <!-- Cómo funciona este bot -->
-    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 120%; border-radius: 16px; box-shadow: 0 4px 24px #a18cd122;">
-  <iframe
-    src="https://www.youtube.com/embed/UtWnmSyWun0"
-    title="¿Cómo funciona este bot?"
-    frameborder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-    allowfullscreen
-    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 26px;">
-  </iframe>
-</div>
-
 
       </div>
       <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; max-width: 1200px; margin: 0 auto;">
@@ -567,21 +562,12 @@
         <div style="display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap;">
             <div class="card gsap-card" style="background: #ffffff; border-radius: 15px; padding: 1.5rem; box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); transform: scale(1); transition: transform 0.3s; display: flex; flex-direction: column; align-items: center;">
                 <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem; color: #6a4bc7;">Pack Profesional</h3>
-                <p style="font-size: 1.5rem; margin-bottom: 1rem; color: #ff4081; font-weight: bold; text-align: center;">50€/mes</p>
+                <p style="font-size: 1.5rem; margin-bottom: 1rem; color: #ff4081; font-weight: bold; text-align: center;">40€/mes</p>
                 <ul style="list-style: none; padding: 0; color: #444; text-align: left;">
                     <li>✅ Bot <img src="./whatsapp-icon.png" alt="WhatsApp" style="width: 24px; vertical-align: middle;"> personalizado</li>
                     <li>✅ Confirmación de citas</li>
                     <li>✅ Recordatorios automáticos</li>
                     <li>✅ Página web con subdominio</li>
-                </ul>
-            </div>
-            <div class="card gsap-card" style="background: #ffffff; border-radius: 15px; padding: 1.5rem; box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); transform: scale(1); transition: transform 0.3s; display: flex; flex-direction: column; align-items: center;">
-                <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem; color: #6a4bc7;">Pack Mantenimiento</h3>
-                <p style="font-size: 1.5rem; margin-bottom: 1rem; color: #ff4081; font-weight: bold; text-align: center;">20€/mes</p>
-                <ul style="list-style: none; padding: 0; color: #444; text-align: left;">
-                    <li>✅ Soporte técnico</li>
-                    <li>✅ Actualizaciones mensuales</li>
-                    <li>✅ Monitoreo 24/7</li>
                 </ul>
             </div>
         </div>
@@ -629,6 +615,11 @@
           <p style="margin-top:1.2em; color:#6a4bc7; font-weight:600; font-size: 1.08em; text-align:center;">¡Haz crecer tu negocio y ahorra tiempo automatizando tu <img src="./whatsapp-icon.png" alt="WhatsApp" style="width: 24px; vertical-align: middle;"> hoy mismo!</p>
         </div>
       </div>
+    </section>
+    <!-- POLITICA DE PRIVACIDAD -->
+    <section id="privacidad" class="gsap-section" style="padding: 2rem; text-align: center; background: #f8f9fa; border-radius: 20px; box-shadow: 0 4px 24px rgba(0,0,0,0.1); margin-top: 2rem;">
+      <h2 style="color:#6a4bc7;">Política de Privacidad</h2>
+      <p style="color:#444;">Tu información personal se gestiona de forma segura y no se comparte con terceros.</p>
     </section>
 
     <!-- MODAL INFO LEGAL -->
