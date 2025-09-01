@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha \"tests/**/*.test.js\""
   },
   "keywords": [],
   "author": "",
@@ -13,13 +13,19 @@
     "body-parser": "^1.20.3",
     "express": "^4.21.2",
     "express-session": "^1.18.1",
+    "dotenv": "^16.4.5",
     "node-cron": "^3.0.3",
     "puppeteer": "^24.6.1",
     "qrcode": "^1.5.4",
     "qrcode-terminal": "^0.12.0",
+    "nodemailer": "^6.9.8",
     "socket.io": "^4.8.1",
     "whatsapp-business-api": "^0.0.4",
     "whatsapp-web.js": "^1.26.0"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0",
+    "supertest": "^6.3.3"
   },
   "bin": {
     "bot": "server.js"

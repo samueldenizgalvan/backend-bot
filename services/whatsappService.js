@@ -5,11 +5,15 @@ const bots = new Map(); // username -> { client, estado }
 // Inicializa o recupera el bot para un usuario
 async function getOrCreateBot(username, io) {
     if (bots.has(username)) return bots.get(username).client;
+    if (process.env.TEST_ENV) {
+        const client = { destroy: async () => {} };
+        bots.set(username, { client });
+        return client;
+    }
     const client = new Client({
         authStrategy: new LocalAuth({ clientId: username }),
         puppeteer: { args: ['--no-sandbox', '--disable-setuid-sandbox'] }
     });
-    // Puedes agregar aquí eventos personalizados por usuario si lo deseas
     client.on('ready', () => {
         if (io) io.emit('log', `✅ Bot de WhatsApp listo para ${username}`);
     });

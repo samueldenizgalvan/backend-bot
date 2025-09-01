@@ -6,7 +6,7 @@ const path = require('path');
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const cron = require('node-cron');
-const { protegerRuta } = require('./middleware/authMiddleware');
+const { protegerRuta, requireTenant } = require('./middleware/authMiddleware');
 const authRoutes = require('./routes/authRoutes');
 const citasRoutes = require('./routes/citasRoutes');
 const botRequestRoutes = require('./routes/botRequestRoutes');
@@ -19,6 +19,10 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 botService.setIO(io);
+
+app.set('citasPendientes', new Map());
+app.set('citasConfirmadas', new Map());
+app.set('guardarCitas', () => {});
 
 // Middleware
 app.use(express.json());
@@ -73,7 +77,7 @@ app.get('/admin.html', protegerRuta, (req, res) =>
 app.use('/api', authRoutes);
 app.use('/api', citasRoutes);
 app.use('/api', botRequestRoutes);
-app.get('/api/flujo-usuario', (req, res) =>
+app.get('/api/flujo-usuario', requireTenant, (req, res) =>
   res.json(getUserFlowFields())
 );
 
@@ -99,3 +103,5 @@ server.listen(PORT, () => {
   console.log('Servidor listo en http://localhost:' + PORT);
   cargarCitas();
 });
+
+module.exports = { app, server };
